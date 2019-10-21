@@ -27,26 +27,29 @@ class Action {
         ACTIONS.put(action.name, action)
     }
 
-    static final init() {
+    private static final Closure<Boolean> SELF = { User holder, User user -> holder.id == user.id }
+    private static final Closure<Boolean> OTHERS = { User holder, User user -> !SELF(holder, user) }
+    private static final Closure<Boolean> ALL = { h, u -> true }
+    private static final Closure<Boolean> NONE = { h, u -> false }
 
-        Closure<Boolean> self = { User holder, User user -> holder.id == user.id }
-        Closure<Boolean> notSelf = { User holder, User user -> !self(holder, user) }
-        Closure<Void> kill = { users, selection -> if(selection instanceof User) selection.setDead(true) }
+    private static final Closure<Void> KILL = { users, selection -> if(selection instanceof User) selection.setDead(true) }
+
+    static final init() {
 
         register(new Action('eat', 'Who you do you want to eat?',
                 { User holder, User user -> user.role?.name != 'Werewolf' },
                 { User holder, User user -> user.role?.name == 'Werewolf' },
-                kill)
+                KILL)
                 .displayAs('Werewolf')
         )
 
-        register(new Action('see', 'Who do you want to see?', notSelf, self))
+        register(new Action('see', 'Who do you want to see?', OTHERS, SELF))
 
-        register(new Action('ready', 'Are you ready?', (String[]) ['yes'], { h, u -> true }, {u, s -> void}, { User user ->
+        register(new Action('ready', 'Are you ready?', (String[]) ['yes'], ALL, { u, s -> void}, { User user ->
             user.role?.nightAction ?: 'sleep'
         }))
 
-        register(new Action('lynch', 'Whose head should roll?', notSelf, { h, u -> true }, kill, { User user ->
+        register(new Action('lynch', 'Whose head should roll?', OTHERS, ALL, KILL, { User user ->
             user.role?.nightAction ?: 'sleep'
         }))
 
@@ -68,11 +71,11 @@ class Action {
     final String name
     final String[] options
 
-    Action(String name, String message, String[] options, Closure voters = { h, u -> true }, Closure run = { u, s -> void }, Closure next = { null }) {
-        this(name, message, { h, u -> false }, options, voters, run, next)
+    Action(String name, String message, String[] options, Closure voters = ALL, Closure run = { u, s -> void }, Closure next = { null }) {
+        this(name, message, NONE, options, voters, run, next)
     }
 
-    Action(String name, String message, Closure targets, Closure voters = { h, u -> true }, Closure run = { u, s -> void }, Closure next = { null }) {
+    Action(String name, String message, Closure targets, Closure voters = ALL, Closure run = { u, s -> void }, Closure next = { null }) {
         this(name, message, targets, new String[0], voters, run, next)
     }
 

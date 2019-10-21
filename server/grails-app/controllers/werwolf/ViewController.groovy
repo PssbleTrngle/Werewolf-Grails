@@ -1,9 +1,5 @@
 package werwolf
 
-
-import grails.rest.*
-import grails.converters.*
-
 class ViewController {
 	static responseFormats = ['json', 'xml']
 	

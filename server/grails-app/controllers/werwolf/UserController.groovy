@@ -1,7 +1,5 @@
 package werwolf
 
-import org.hibernate.internal.SessionImpl
-
 class UserController {
 	static responseFormats = ['json', 'xml']
     static allowedMethods = [index: 'GET', save: 'POST']

@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0f3d611a-4c63-45f4-99fc-e9754f36b4bc" name="Default Changelist" comment="" />
+    <list default="true" id="0f3d611a-4c63-45f4-99fc-e9754f36b4bc" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/grails-app/controllers/werwolf/Action.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/server/grails-app/controllers/werwolf/Action.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/grails-app/controllers/werwolf/UserController.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/server/grails-app/controllers/werwolf/UserController.groovy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/grails-app/controllers/werwolf/ViewController.groovy" beforeDir="false" afterPath="$PROJECT_DIR$/server/grails-app/controllers/werwolf/ViewController.groovy" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,8 +67,13 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1SVw1t9KjdD8WyO8XqkUtM8fDBG" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="dynamic.classpath" value="true" />
@@ -80,6 +91,7 @@
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
     <property name="settings.editor.selected.configurable" value="MTConfigurable" />
+    <property name="ts.external.directory.path" value="C:\Users\firef\Coding\webserver\Werwolf\client\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
     <key name="MoveMembersDialog.RECENTS_KEY">
@@ -149,7 +161,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1571239464705</updated>
-      <workItem from="1571661913539" duration="6964000" />
+      <workItem from="1571661913539" duration="7984000" />
     </task>
     <servers />
   </component>
@@ -164,6 +176,17 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="masterDetails">
     <states>
