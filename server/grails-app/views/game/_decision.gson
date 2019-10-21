@@ -1,0 +1,15 @@
+import werwolf.Decision
+
+model {
+	Decision decision
+	boolean anonymous
+}
+
+json {
+    if(decision.target) selection decision.target.id
+    else selection decision.selection
+    if(!anonymous) user {
+        name decision.user.name
+        id decision.user.id
+    }
+}

@@ -1,0 +1,16 @@
+import werwolf.User
+
+model {
+	User user
+}
+
+json {
+    if(user.token) token user.token
+    id user.id
+    name user.name
+    dead user.dead
+
+    if(user.role) role {
+        name user.role.name
+    }
+}

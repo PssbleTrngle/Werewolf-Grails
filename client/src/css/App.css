@@ -1,0 +1,344 @@
+* {
+  user-select: none;
+}
+
+.person {
+  text-align: center;
+  padding: 10px;
+  width: 150px;
+  overflow-x: hidden;
+}
+
+.person.dead {
+  filter: grayscale();
+}
+
+.small .person {
+  width: 100px;
+}
+
+.tiny .person {
+  width: 70px;
+}
+
+.person img {
+  width: 100%;
+}
+
+.person.clickable img {
+  transform: translate(0, 0);
+  transition: transform 0.2s linear;
+  cursor: pointer;
+}
+
+.person.clickable img:hover {
+  transform: translate(0, -5px);
+}
+
+.screen {
+  position: relative;
+}
+
+.screen-message {
+  font-size: 4rem;
+  margin-bottom: 0.5em;
+}
+
+.container {
+  max-width: 12000px;
+}
+
+.sidebar {
+  padding: 15px 25px;
+  background-color: #AAA
+}
+
+.game {
+  position: relative;
+  text-align: center;
+  padding: 100px 15px 70px 15px;
+  max-width: 80vw;
+  min-width: 700px;
+  overflow: hidden;
+  transition: background 0.2s linear, color 0.2s linear, height 0.2s linear;
+}
+
+.game.night {
+  background-color: #222;
+  color: #FFF;
+}
+
+.game.day {
+  background-color: #EEE;
+  color: #222;
+}
+
+.option {
+  text-transform: capitalize;
+  font-size: 3rem;
+  padding: 0.8rem 1rem;
+  transition: box-shadow 0.15s linear;
+  box-shadow: 0 0 0 transparent inset;
+  border: none;
+}
+
+.option:focus {
+  outline: none;
+}
+
+.option:hover {
+  box-shadow: 0.05rem  0.1rem 0.5rem #0005 inset;
+}
+
+.night .option {
+  box-shadow: 0 0 0 transparent;
+}
+
+.night .option:hover {
+  box-shadow: 0.1rem  0.2rem 0.8rem #000A;
+}
+
+.bg {
+  background-color: #CCC;
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+}
+
+.token {
+  font-size: 0.7rem;
+  line-height: 0;
+}
+
+.orbits {
+  top: 40px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  height: 200%;
+  overflow: hidden;
+  animation: rise 2s linear forwards;
+  pointer-events: none;
+}
+
+.orbits::before, .orbits::after {
+  content: '';
+  left: 50%;
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 100%;
+}
+
+.orbits::before {
+  top: 0;
+  transform: translate(-50%, 0);
+  background-color: #ddd;
+}
+
+.orbits::after {
+  top:calc(100% - 15px);
+  transform: translate(-50%, -100%);
+  background-color: #EEE;
+  box-shadow: 0 0 12px 3px #f5a300;
+}
+
+@keyframes rise {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes sink {
+  from {
+    transform: rotate(180deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.night .orbits {
+  animation-name: sink;
+}
+
+.vote {
+  margin: auto;
+  margin-top: 5px;
+  background-color: #0005;
+  border-radius: 20px;
+  width: 30px;
+  padding: 15px 0;
+  transition: width 0.1s linear;
+  overflow: hidden;
+}
+
+.vote:hover {
+  width: 70px;
+  padding: 3px 0;
+}
+
+.vote-tooltip {
+  white-space: nowrap;
+  pointer-events: none;
+  display: none;
+  font-size: 16px;
+}
+
+.vote:hover .vote-tooltip {
+  display: block;
+}
+
+.sky-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 240px;
+}
+
+.sky {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: background 0.5s linear;
+}
+
+.clouds {
+  width: 100%;
+  pointer-events: none;
+  opacity: 0.2;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.night .sky {
+  background-color: #111;
+}
+
+.day .sky {
+  background-color: #73c2f5;
+}
+
+.cloud {
+  background-color: #777;
+  width: 200px;
+  height: 40px;
+  position: absolute;
+  top: 10px;
+  animation: cloud 10s linear infinite backwards;
+  border-radius: 15px;
+}
+
+.day .cloud {
+  background-color: #EEE;
+}
+
+@keyframes cloud {
+  from {
+    left: 100%;
+  }
+  to {
+    left: -200px;
+  }
+}
+
+.loading {
+  font-family: monospace;
+  font-size: 3rem;
+}
+
+.loading::after {
+  content: '';
+  animation: loading 4s linear infinite backwards;
+}
+
+@keyframes loading {
+  from, to  { content: '' }
+  25%       { content: '.' }
+  50%       { content: '..' }
+  75%       { content: '...' }
+}
+
+.loading-icon {
+  position: relative;
+  width: 50%;
+  height: 50%;
+  border-radius: 100%;
+  margin: 25%;
+  animation: icon 14s linear infinite backwards;
+  animation-delay: 5.7s;
+  overflow: hidden;
+}
+
+.icon-sky {
+  width: 200px;
+  height: 200px;
+  margin: 10px auto;
+  border-radius: 1000%;
+  padding: 20px;
+  animation: iconSky 14s linear infinite backwards;
+  animation-delay: 5.8s;
+  background-color: #73c2f5;
+}
+
+.icon-cloud {
+  position: absolute;
+  width: 90%;
+  height: 40%;
+  background-color: #DDD;
+  top: 10%;
+  border-radius: 40px;
+
+  animation: iconCloud 7s linear infinite backwards, iconCloudColor 14s linear infinite backwards;
+  animation-delay: 0s, 5.8s;
+}
+
+.icon-cloud:nth-child(n+3) {
+  animation: iconCloudCover 7s linear infinite backwards, iconCloudColor 14s linear infinite backwards;
+  animation-delay: 0s, 5.8s;
+  height: 70%;
+  width: 120%;
+}
+
+.icon-cloud:nth-child(2n) {
+  top: 30%;
+  animation-delay: 0.4s, 5.8s;
+}
+
+.icon-cloud:nth-child(5) {
+  animation-delay: 0.5s, 5.8s;
+  top: 0;
+}
+
+@keyframes iconCloud {
+  from, 20% { left: 100%; }
+  40%, to { left: -90%; }
+}
+
+@keyframes iconCloudCover {
+  from, 70% { left: 100%; }
+  80%, to { left: -120%; }
+}
+
+@keyframes icon {
+  from, 50% { background-color: #EEE; box-shadow: 0 0 12px 3px #f5a300; }
+  51%, 99% { background-color: #aaa; box-shadow: 0 0 0; }
+}
+
+@keyframes iconSky {
+  1%, 49% { background-color: #73c2f5; }
+  51%, 99% { background-color: #111; }
+}
+
+@keyframes iconCloudColor {
+  1%, 49% { background-color: #BBB; }
+  51%, 99% { background-color: #444; }
+}

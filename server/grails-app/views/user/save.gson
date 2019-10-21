@@ -1,0 +1,10 @@
+import werwolf.User
+
+model {
+	User user
+}
+
+json {
+    success user != null
+    token user?.token
+}

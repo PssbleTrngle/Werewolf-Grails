@@ -1,0 +1,7 @@
+import werwolf.User
+
+model {
+	User user
+}
+
+json tmpl.known(user: user)

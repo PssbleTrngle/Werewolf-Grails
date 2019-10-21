@@ -1,0 +1,30 @@
+import werwolf.Game
+import werwolf.Action
+
+model {
+	Game game
+	User user
+}
+
+json {
+    if(user) user tmpl.'/user/known'(user)
+    if(game) game {
+        night game.isNight
+        users tmpl.'/user/known'('user', game.users)
+        if(user.screen) screen {
+
+            if(user.screen.action()) {
+                action user.screen.action
+                targets g.render(template: '/user/unknown', var: 'user', collection: user.screen.action().getTargets(game.users, user))
+                voters g.render(template: '/user/unknown', var: 'user', collection: user.screen.action().getVoters(game.users, user),
+                            model: [displayAs: (user.dead && game.revealDead) ? user.role : user.screen.action().displayAs()])
+            }
+
+            options user.screen.action().options
+            message user.screen.action().message
+
+            if(user.screen.result) result user.screen.result
+            decisions g.render(template: 'decision', var: 'decision', collection: user.screen.decisions, model: [anonymous: user.screen.anonymous])
+        }
+    }
+}
