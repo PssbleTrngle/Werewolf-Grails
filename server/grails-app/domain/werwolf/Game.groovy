@@ -18,16 +18,32 @@ class Game {
         decisions cascade: 'all-delete-orphan'
     }
 
+    void checkScreens() {
+
+        getScreens().each({ Vote screen ->
+            if(screen.canClose())
+                User.withTransaction({
+
+                    def users = screen.getUsers()
+                    users.clear()
+
+                    users.each({ User voter ->
+                        if (voter.screen == null) {
+
+                            Action next = screen.action().nextAction(voter)
+                            if(next) voter.setNextAction(next)
+                        }
+                    })
+                })
+        })
+    }
+
     void checkDone() {
+
+        checkScreens()
+
         def users = this.getUsers().findAll({User user -> !user.isDead()})
-
-        int unfinished = screens.count({ Vote screen ->
-            !screen.isStatic() && screen.decisions?.size() < screen.users?.size()
-        })
-
-        int sleeping = users.count({ User user ->
-            user.screen?.action == 'sleep'
-        })
+        int unfinished = screens.count({ Vote screen -> screen.isOpen() })
 
         if (unfinished == 0) {
 
@@ -46,20 +62,18 @@ class Game {
 
             screens.clear()
 
-            Game.withTransaction({
+            users.each({ User user ->
+                /* TODO insert pending screen */
+
+                Action action = Action.get(isIsNight() ? 'lynch' : (user.role?.nightAction ?: 'sleep'))
+                user.setNextAction(action)
+
+            })
+
+            withTransaction({
                 setIsNight(!isIsNight())
                 save()
             })
-
-            if(sleeping == users.size()) {
-                users.each({ User user ->
-                    /* TODO insert pending screen */
-
-                    Vote lynch = new Vote(action: 'lynch', game: this).save()
-                    user.setProperty('screen', lynch)
-                    user.save()
-                })
-            }
 
         }
     }

@@ -1,7 +1,6 @@
 package werwolf
 
 import javax.script.ScriptEngine
-import javax.swing.Action
 
 class User{
 
@@ -23,13 +22,28 @@ class User{
     }
 
     void setDead(boolean dead) {
-        if(dead) User.withTransaction({
+        if(dead) withTransaction({
             Vote screen = new Vote(action: 'dead', game: game).save()
             setProperty('screen', screen)
             save()
         })
 
-        super.setDead(dead)
+        this.dead = dead;
+    }
+
+    void setNextAction(Action next) {
+        assert next != null
+
+        withTransaction({
+            Vote nextScreen = new Vote(action: next.name, game: this.game)
+            next.getVoters(this.game.users, this).each({ other ->
+                if (other.screen?.action == next.name)
+                    nextScreen = other.screen
+            })
+
+            this.setProperty('screen', nextScreen.save())
+            this.save()
+        })
     }
 
 }

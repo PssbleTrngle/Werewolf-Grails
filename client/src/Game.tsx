@@ -77,25 +77,49 @@ class People extends Component<{users: User[], size: size, action?: string, app?
 class ScreenComponent extends Component<{screen: Screen, app?: App},{}> {
 
 	render() {
-		const {message, action, options, targets, voters, result, decisions} = this.props.screen;
+		const {action, options, targets, voters, result, decisions} = this.props.screen;
 		const {app} = this.props;
 
 		return (
-			<>
-			<div className='screen mb-5'>
-				<h1 className='text-center screen-message'>{message}</h1>
-				<div className='row justify-content-center'>
+			<div className='screen pt-4'>
+				{options.length > 0 &&<div className='row justify-content-center mb-5'>
 					{options.map(option =>	{
 						let click = () => {
 							if(app) app.sendAction({ action, option })
 						};
 						return <button onClick={click} key={option} className='option'>{option}</button>
 					})}
-				</div>
-			</div>
+				</div>}
 			<People app={this.props.app} size={'small'} users={targets} action={action} decisions={decisions} />
 			{ voters.length > 1 && <People app={this.props.app} size={'tiny'} users={voters} decisions={decisions} voters={true} /> }
-			</>
+			
+			</div>
+		);
+	}
+
+}
+
+class Sky extends Component<{message: string},{}> {
+
+	render() {
+		const {message} = this.props;
+		let delay = 0;
+
+		return (
+			<div className='sky-container'>
+				<div className='sky'>
+					<h1 className='text-center screen-message'>{message}</h1>
+				</div>
+				<div className='orbits'></div>
+				<div className='clouds'>
+				{[0,1,2,3,4].map(i => 
+					<div className='cloud' key={i} style={{ 
+						animationDelay: ((delay += (i % 3) + (i % 4 == 0 ? 2 : 0))) * -1 + 's',
+						top: (i * 17) % 10 * 5 + 13
+					}}></div>
+				)}
+				</div>
+			</div>
 		);
 	}
 
@@ -106,22 +130,9 @@ export class Game extends Component<{game: GameState, app: App},{}> {
 	render() {
 		const {screen, users, night} = this.props.game;
 
-		let delay = 0;
-
 		return (
-			<div className={'game' + (night ? ' night' : ' day')}>
-				<div className='sky-container'>
-					<div className='sky'></div>
-					<div className='orbits'></div>
-					<div className='clouds'>
-					{[0,1,2,3,4].map(i => 
-						<div className='cloud' key={i} style={{ 
-							animationDelay: (delay += (i % 3) + (i % 4 == 0 ? 2 : 0)) + 's',
-							top: (i * 17) % 10 * 5 + 13
-						}}></div>
-					)}
-					</div>
-				</div>
+			<div className={night ? 'night' : ' day'}>
+				<Sky message={screen.message} />
 				<ScreenComponent app={this.props.app} screen={screen} />
 			</div>
 		)

@@ -27,14 +27,15 @@ class Action {
         ACTIONS.put(action.name, action)
     }
 
-    private static final Closure<Boolean> SELF = { User holder, User user -> holder.id == user.id }
-    private static final Closure<Boolean> OTHERS = { User holder, User user -> !SELF(holder, user) }
     private static final Closure<Boolean> ALL = { h, u -> true }
     private static final Closure<Boolean> NONE = { h, u -> false }
 
-    private static final Closure<Void> KILL = { users, selection -> if(selection instanceof User) selection.setDead(true) }
-
     static final init() {
+
+        final Closure<Boolean> SELF = { h, u -> h.id == u.id }
+        final Closure<Boolean> OTHERS = { h, u -> !SELF(h, u) }
+
+        final Closure<Void> KILL = { users, selection -> if(selection instanceof User) selection.setDead(true) }
 
         register(new Action('eat', 'Who you do you want to eat?',
                 { User holder, User user -> user.role?.name != 'Werewolf' },
@@ -45,13 +46,9 @@ class Action {
 
         register(new Action('see', 'Who do you want to see?', OTHERS, SELF))
 
-        register(new Action('ready', 'Are you ready?', (String[]) ['yes'], ALL, { u, s -> void}, { User user ->
-            user.role?.nightAction ?: 'sleep'
-        }))
+        register(new Action('ready', 'Are you ready?', (String[]) ['yes'], ALL, { u, s -> void}))
 
-        register(new Action('lynch', 'Whose head should roll?', OTHERS, ALL, KILL, { User user ->
-            user.role?.nightAction ?: 'sleep'
-        }))
+        register(new Action('lynch', 'Whose head should roll?', OTHERS, ALL, KILL))
 
         register(new Action('sleep', 'You are sleeping'))
 
@@ -91,7 +88,7 @@ class Action {
 
     Action nextAction(User user) {
         String next = this.next(user)
-        if(!next) next = 'sleep'
+        if(user.game?.isIsNight() && !next) next = 'sleep'
         get(next)
     }
 

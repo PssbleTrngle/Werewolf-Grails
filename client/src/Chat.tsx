@@ -6,6 +6,16 @@ interface Message {
     sender: User;
 }
 
+class ChatInput extends Component<{},{}> {
+
+    render() {
+        return (
+            <input placeholder='Message' type='text'></input>
+        );
+    }
+
+}
+
 class MessageBubble extends Component<{message: Message, isSender: boolean},{}> {
 
     render() {
@@ -36,9 +46,10 @@ export class Chat extends Component<{token: string},{}> {
         ];
 
         return (
-            <div className='col-auto chat'>
-                {messages.map((msg, i) => <MessageBubble key={i} message={msg} isSender={msg.sender.token == token} />)}
-            </div>
+            <>
+            {messages.map((msg, i) => <MessageBubble key={i} message={msg} isSender={msg.sender.token == token} />)}
+            <ChatInput />
+            </>
         );
     }
 

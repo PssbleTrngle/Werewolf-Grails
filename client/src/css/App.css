@@ -44,31 +44,26 @@
   margin-bottom: 0.5em;
 }
 
-.container {
-  max-width: 12000px;
-}
-
-.sidebar {
+#sidebar {
   padding: 15px 25px;
   background-color: #AAA
 }
 
-.game {
+#game {
   position: relative;
   text-align: center;
-  padding: 100px 15px 70px 15px;
-  max-width: 80vw;
-  min-width: 700px;
+  padding: 0;
+  padding-bottom: 20px;
   overflow: hidden;
   transition: background 0.2s linear, color 0.2s linear, height 0.2s linear;
 }
 
-.game.night {
+#game .night {
   background-color: #222;
   color: #FFF;
 }
 
-.game.day {
+#game .day {
   background-color: #EEE;
   color: #222;
 }
@@ -76,7 +71,7 @@
 .option {
   text-transform: capitalize;
   font-size: 3rem;
-  padding: 0.8rem 1rem;
+  padding: 5px 15px;
   transition: box-shadow 0.15s linear;
   box-shadow: 0 0 0 transparent inset;
   border: none;
@@ -98,7 +93,7 @@
   box-shadow: 0.1rem  0.2rem 0.8rem #000A;
 }
 
-.bg {
+#root {
   background-color: #CCC;
   position: fixed;
   height: 100vh;
@@ -141,6 +136,15 @@
   transform: translate(-50%, -100%);
   background-color: #EEE;
   box-shadow: 0 0 12px 3px #f5a300;
+}
+
+.night .orbits::after {
+  background-color: #ffd6a3;
+  box-shadow: 0 0 12px 3px #f54a20;
+}
+
+.day .orbits::before {
+  background-color: #eee;
 }
 
 @keyframes rise {
@@ -193,21 +197,24 @@
 }
 
 .sky-container {
-  position: absolute;
+  position: relative;
   top: 0;
   left: 0;
   overflow: hidden;
   width: 100%;
-  height: 240px;
 }
 
 .sky {
-  position: absolute;
+  padding: 20px;
+  padding-top: 80px;
+  padding-bottom: 5px;
+  position: relative;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   transition: background 0.5s linear;
+  background-image: linear-gradient(transparent 80%, #0003);
 }
 
 .clouds {
@@ -253,17 +260,19 @@
 .loading {
   font-family: monospace;
   font-size: 3rem;
+  white-space: nowrap;
 }
 
 .loading::after {
+  white-space: nowrap;
   content: '';
   animation: loading 4s linear infinite backwards;
 }
 
 @keyframes loading {
-  from, to  { content: '' }
-  25%       { content: '.' }
-  50%       { content: '..' }
+  from, to  { content: '   ' }
+  25%       { content: '.  ' }
+  50%       { content: '.. ' }
   75%       { content: '...' }
 }
 
@@ -341,4 +350,136 @@
 @keyframes iconCloudColor {
   1%, 49% { background-color: #BBB; }
   51%, 99% { background-color: #444; }
+}
+
+.message-bubble {
+  --color: #444;
+  color: #EEE;
+
+  max-width: 70vw;
+
+  margin: 15px 0;
+  --arrow: 10px;
+  padding: 20px;
+  border-radius: var(--arrow);
+  background-color: var(--color);
+  position: relative;
+
+  transition: background 0.1s linear;
+}
+
+.message-bubble:hover {
+  --color: #555;
+}
+
+.message-bubble.sender {
+  --color: #777;
+  color: #000;
+}
+
+.message-bubble.sender:hover {
+  --color: #888;
+}
+
+.message-bubble::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: #0008;
+
+  transition: border 0.1s linear;
+}
+
+.message-bubble::after {
+
+  content: '';
+  position: absolute;
+  top: calc(100% - var(--arrow) * 3);
+
+  left: calc(-2 * var(--arrow));
+
+  border-top: calc(var(--arrow)) transparent solid;
+  border-left: calc(var(--arrow)) transparent solid;
+
+  border-bottom: calc(var(--arrow)) var(--color) solid;
+  border-right: calc(var(--arrow)) var(--color) solid;
+
+}
+
+.message-bubble.sender::after {
+
+  left: 100%;
+
+  border-top: calc(var(--arrow)) transparent solid;
+  border-right: calc(var(--arrow)) transparent solid;
+
+  border-bottom: calc(var(--arrow)) var(--color) solid;
+  border-left: calc(var(--arrow)) var(--color) solid;
+
+}
+
+.message-bubble .sender {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  font-size: 0.6rem;
+}
+
+#chat {
+  padding: 15px 30px;
+  padding-bottom: 50px;
+  background-color: #AAA
+}
+
+#chat input {
+  position: absolute;
+  bottom: 10px;
+  left: 15px;
+  width: calc(100% - 30px);
+
+  border-radius: 20px;
+  height: 40px;
+
+  padding: 5px 15px;
+}
+
+.nav {
+  background-color: #444;
+  text-transform: capitalize;
+}
+
+/* Desktop */
+@media only screen and (min-width: 768px) {
+  .tab-content > .tab-pane {
+    display: block;
+  }
+
+  nav {
+   display: none;
+  }
+
+  #game {
+    min-width: 60vw;
+  }
+
+  .message-bubble:not(.sender) {
+    margin-left: 10px;
+  }
+
+  .message-bubble.sender {
+    margin-right: 10px;
+  }
+}
+
+/* Mobile */
+@media only screen and (max-width: 767px) {
+  .tab-content > .tab-pane {
+    width: 95%;
+  }
+}
+
+.nav-link {
+  text-shadow: none !important;
+  border-radius: 0 !important;
 }

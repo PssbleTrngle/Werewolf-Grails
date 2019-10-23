@@ -40,32 +40,16 @@ class Vote {
         return target?.value > option?.value ? target?.key : option?.key
     }
 
+    boolean isOpen() {
+        return !isStatic() && decisions?.size() < users?.size()
+    }
+
+    boolean canClose() {
+        return !this.isOpen() && !isStatic()
+    }
+
     void checkDone() {
-        Set<User> notVoted = this.users.findAll({ User voter ->
-            !decisions.find({ Decision decision -> decision.user.id == voter.id })
-        })
 
-        if(notVoted.isEmpty()) {
-            User.withTransaction({
-
-                this.users.each({ User voter -> voter.screen = null })
-                this.users.each({ User voter ->
-                    if (voter.screen == null) {
-                        Action next = action().nextAction(voter)
-
-                        Vote screen = null
-                        next.getVoters(voter.game.users, voter).each({ other ->
-                            if(other.screen?.action == next.name)
-                                screen = other.screen
-                        })
-
-                        if(!screen) screen = new Vote(action: next.name, game: voter.game).save()
-                        voter.setProperty('screen', screen)
-                        voter.save()
-                    }
-                })
-            })
-        }
     }
 
     static belongsTo = [ game: Game ]

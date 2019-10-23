@@ -7,7 +7,7 @@ export interface User {
 		name: string
 	};
 	token?: string
-	dead: boolean
+	dead?: boolean
 }
 
 type PersonProps = {

@@ -7,6 +7,34 @@ import JWT from 'jsonwebtoken'
 
 import { Person, User } from './Person'
 import { Game, NoGame, GameState } from './Game'
+import { Chat } from './Chat'
+
+class Nav extends Component<{tabs: string[], active: string},{}> {
+
+    render() {
+        const {tabs, active} = this.props;
+
+        return (
+            <nav>
+                <div className='nav nav-tabs nav-fill' id='nav-tab' role='tablist'>
+                    {tabs.map((tab, i) => 
+                        <a
+                            key={tab}
+                            className={'nav-item nav-link' + (active == tab ? ' active' : '')}
+                            id={`nav-${tab}-tab`}
+                            data-toggle="tab"
+                            href={`#${tab}`}
+                            role="tab"
+                            aria-controls={`${tab}`}
+                            aria-selected={active == tab}
+                        >{tab}</a>
+                    )}
+                </div>
+            </nav>
+        );
+    }
+
+}
 
 class App extends Component<{token?: string},{user?: User, game?: GameState}> {
 
@@ -80,14 +108,24 @@ class App extends Component<{token?: string},{user?: User, game?: GameState}> {
 
     render() {
         const {user, game} = this.state;
+        const token = this.token();
+
+        const panels: any = {sidebar: <Sidebar app={this} game={game} user={user} />};
+
+        panels.game = (game ? <Game app={this} game={game} /> : <NoGame />)
+        if(token) panels.chat = (<Chat token={token}/>)
+
+        let active = 'game';
 
         return (
             <>
-            <div className='bg'></div>
-            <div className='row container justify-content-center'>
-                <Sidebar app={this} game={game} user={user} />
-                { game && <Game app={this} game={game} /> }
-                { !game && <NoGame /> }
+            <Nav tabs={Object.keys(panels)} active={active} />
+            <div className='row justify-content-center tab-content'>
+                {Object.keys(panels).map(id => 
+                    <div key={id} id={`${id}`} role="tabpanel" className={`tab-pane col-auto chat ${id == active ? 'active' : ''}`}>
+                        {panels[id]}
+                    </div>
+                )}
             </div>
             </>
         );
@@ -100,16 +138,16 @@ class Sidebar extends Component<{game?: GameState, user?: User, app: {login(user
         const {user, game, app} = this.props;
 
         return (
-            <div className='col-auto sidebar'>
-                { user && <Person showRole={true} user={user} /> }
-                { user && game && 
-                    <select defaultValue={user.name} onChange={(e) => app.login(e.target.value)}>
-                        {game.users.map(user => {
-                            return <option key={user.id}>{user.name}</option>
-                        })}
-                    </select>
-                }
-            </div>
+            <>
+            { user && <Person showRole={true} user={user} /> }
+            { user && game && 
+                <select defaultValue={user.name} onChange={(e) => app.login(e.target.value)}>
+                    {game.users.map(user => {
+                        return <option key={user.id}>{user.name}</option>
+                    })}
+                </select>
+            }
+            </>
         );
     }
 
