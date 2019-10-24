@@ -10,6 +10,7 @@ class User{
     boolean dead = false
 
     static belongsTo = [ game: Game, role: Role, screen: Vote ]
+    static hasMany = [ chats: Chat ]
 
     static constraints = {
         game nullable: true
@@ -23,8 +24,7 @@ class User{
 
     void setDead(boolean dead) {
         if(dead) withTransaction({
-            Vote screen = new Vote(action: 'dead', game: game).save()
-            setProperty('screen', screen)
+            setNextAction(Action.get(role.deathAction ?: 'dead'))
             save()
         })
 

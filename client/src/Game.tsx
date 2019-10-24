@@ -131,7 +131,7 @@ export class Game extends Component<{game: GameState, app: App},{}> {
 		const {screen, users, night} = this.props.game;
 
 		return (
-			<div className={night ? 'night' : ' day'}>
+			<div className={'game-container ' + (night ? 'night' : 'day')}>
 				<Sky message={screen.message} />
 				<ScreenComponent app={this.props.app} screen={screen} />
 			</div>
@@ -160,9 +160,9 @@ export class NoGame extends Component<{},{}> {
 
 	render() {
 		return (
-			<div className='game night'>
+			<div className='game-container loading night'>
 				<Icon />
-				<h1 className='loading'>Loading</h1>
+				<p className='loading'>Loading</p>
 			</div>
 		)
 

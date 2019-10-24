@@ -6,6 +6,12 @@ interface Message {
     sender: User;
 }
 
+export interface Chat {
+    id: number;
+    name: string;
+    messages: Message[];
+}
+
 class ChatInput extends Component<{},{}> {
 
     render() {
@@ -31,10 +37,11 @@ class MessageBubble extends Component<{message: Message, isSender: boolean},{}> 
 
 }
 
-export class Chat extends Component<{token: string},{}> {
+export class ChatComponent extends Component<{token: string, chat: Chat, visible: boolean, panel: {back: () => void}},{}> {
 
     render() {
-        const {token} = this.props;
+        const {chat, token, visible, panel} = this.props;
+        const {name} = chat;
 
         const hans: User = {name: 'Hans', id: 1, token: token};
         const peter: User = {name: 'Peter', id: 2};
@@ -46,13 +53,47 @@ export class Chat extends Component<{token: string},{}> {
         ];
 
         return (
+            <div className={`chat-panel ${visible ? 'visible' : ''}`}>
+                <p><a onClick={() => panel.back()}>Back</a></p>
+                {messages.map((msg, i) => <MessageBubble key={i} message={msg} isSender={msg.sender.token == token} />)}
+                <ChatInput />
+            </div>
+        );
+    }
+
+}
+
+export class ChatPanel extends Component<{token: string, chats: Chat[]},{selected?: number}> {
+
+    constructor(props: {token: string, chats: Chat[]}) {
+        super(props);
+        this.state = {selected: undefined}
+    }
+
+    select(selected?: number) {
+        this.setState({ selected })
+    }
+
+    back() {
+        this.select();
+    }
+
+    render() {
+        const {token, chats} = this.props;
+        const {selected} = this.state;
+
+        return (
             <>
-            {messages.map((msg, i) => <MessageBubble key={i} message={msg} isSender={msg.sender.token == token} />)}
-            <ChatInput />
+            <div className={`chat-panel ${selected ? '' : 'visible'}`}>
+                {chats.map((chat, i) => 
+                    <p><a onClick={() => this.select(chat.id)}>{chat.name}</a></p>
+            )}
+            </div>
+            {chats.map((chat, i) => <ChatComponent visible={selected == chat.id} token={token} key={i} chat={chat} panel={this} />)}
             </>
         );
     }
 
 }
 
-export default Chat;
+export default ChatPanel;

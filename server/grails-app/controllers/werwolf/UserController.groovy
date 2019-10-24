@@ -19,8 +19,7 @@ class UserController {
 
             Game.withTransaction {
                 println "Creating Game for User $user.token"
-                Game game = new Game()
-                game.assignRoles(bots)
+                Game.createGame(bots)
             }
 
         })

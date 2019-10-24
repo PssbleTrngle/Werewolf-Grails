@@ -34,25 +34,27 @@ class Action {
 
         final Closure<Boolean> SELF = { h, u -> h.id == u.id }
         final Closure<Boolean> OTHERS = { h, u -> !SELF(h, u) }
+        final Closure<Boolean> OWN_ROLE = { h, u -> h.role.id == u.role.id }
+        final Closure<Boolean> OTHER_ROLE = { h, u -> !OWN_ROLE(h, u) }
 
         final Closure<Void> KILL = { users, selection -> if(selection instanceof User) selection.setDead(true) }
 
         register(new Action('eat', 'Who you do you want to eat?',
-                { User holder, User user -> user.role?.name != 'Werewolf' },
-                { User holder, User user -> user.role?.name == 'Werewolf' },
+                OTHER_ROLE,
+                OWN_ROLE,
                 KILL)
                 .displayAs('Werewolf')
         )
 
         register(new Action('see', 'Who do you want to see?', OTHERS, SELF))
 
-        register(new Action('ready', 'Are you ready?', (String[]) ['yes'], ALL, { u, s -> void}))
+        register(new Action('hunt', 'Take someone with you', OTHERS, SELF, KILL))
 
+        register(new Action('ready', 'Are you ready?', (String[]) ['yes'], ALL, { u, s -> void}))
         register(new Action('lynch', 'Whose head should roll?', OTHERS, ALL, KILL))
 
-        register(new Action('sleep', 'You are sleeping'))
-
-        register(new Action('dead', 'You are dead'))
+        register(new Action('sleep', 'You are sleeping', NONE, SELF))
+        register(new Action('dead', 'You are dead', NONE, SELF))
 
     }
 
@@ -87,6 +89,8 @@ class Action {
     }
 
     Action nextAction(User user) {
+        if(user.isDead()) return get('dead')
+
         String next = this.next(user)
         if(user.game?.isIsNight() && !next) next = 'sleep'
         get(next)

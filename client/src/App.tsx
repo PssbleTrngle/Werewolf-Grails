@@ -7,7 +7,7 @@ import JWT from 'jsonwebtoken'
 
 import { Person, User } from './Person'
 import { Game, NoGame, GameState } from './Game'
-import { Chat } from './Chat'
+import { ChatPanel, Chat } from './Chat'
 
 class Nav extends Component<{tabs: string[], active: string},{}> {
 
@@ -36,7 +36,7 @@ class Nav extends Component<{tabs: string[], active: string},{}> {
 
 }
 
-class App extends Component<{token?: string},{user?: User, game?: GameState}> {
+class App extends Component<{token?: string},{user?: User, game?: GameState, chats?: Chat[]}> {
 
     token(): string | null {
         return localStorage.getItem('token');
@@ -53,7 +53,7 @@ class App extends Component<{token?: string},{user?: User, game?: GameState}> {
         if(token)
             fetch(SERVER_URL + `/game?token=${token}`)
                 .then(r => r.json())
-                .then(json => this.setState({game: json.game, user: json.user}))
+                .then(json => this.setState(json))
                 .catch(error => {});
     }
 
@@ -107,13 +107,13 @@ class App extends Component<{token?: string},{user?: User, game?: GameState}> {
     }
 
     render() {
-        const {user, game} = this.state;
+        const {user, game, chats} = this.state;
         const token = this.token();
 
         const panels: any = {sidebar: <Sidebar app={this} game={game} user={user} />};
 
         panels.game = (game ? <Game app={this} game={game} /> : <NoGame />)
-        if(token) panels.chat = (<Chat token={token}/>)
+        if(token && chats) panels.chat = (<ChatPanel chats={chats} token={token}/>)
 
         let active = 'game';
 
@@ -122,7 +122,7 @@ class App extends Component<{token?: string},{user?: User, game?: GameState}> {
             <Nav tabs={Object.keys(panels)} active={active} />
             <div className='row justify-content-center tab-content'>
                 {Object.keys(panels).map(id => 
-                    <div key={id} id={`${id}`} role="tabpanel" className={`tab-pane col-auto chat ${id == active ? 'active' : ''}`}>
+                    <div key={id} id={`${id}`} role="tabpanel" className={`tab-pane col-auto ${id == active ? 'active' : ''}`}>
                         {panels[id]}
                     </div>
                 )}

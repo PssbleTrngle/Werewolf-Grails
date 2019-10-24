@@ -61,6 +61,6 @@ class Vote {
     }
 
     static mapping = {
-        decisions cascade: 'delete'
+        decisions cascade: 'all-delete-orphan'
     }
 }

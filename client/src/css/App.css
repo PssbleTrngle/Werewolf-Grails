@@ -50,20 +50,29 @@
 }
 
 #game {
+  padding: 0;
   position: relative;
   text-align: center;
-  padding: 0;
-  padding-bottom: 20px;
   overflow: hidden;
   transition: background 0.2s linear, color 0.2s linear, height 0.2s linear;
 }
 
-#game .night {
+.game-container {
+  position: relative;
+  padding: 0;
+  padding-bottom: 20px;
+}
+
+.game-container.loading {
+  padding: 30px 0;
+}
+
+.game-container.night {
   background-color: #222;
   color: #FFF;
 }
 
-#game .day {
+.game-container.day {
   background-color: #EEE;
   color: #222;
 }
@@ -204,6 +213,18 @@
   width: 100%;
 }
 
+.game-container::after {
+  pointer-events: none;
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  --shadow: 20px;
+  background-image: linear-gradient(to right, #0003, transparent var(--shadow), transparent calc(100% - var(--shadow)), #0003)
+}
+
 .sky {
   padding: 20px;
   padding-top: 80px;
@@ -214,7 +235,7 @@
   width: 100%;
   height: 100%;
   transition: background 0.5s linear;
-  background-image: linear-gradient(transparent 80%, #0003);
+  background-image: linear-gradient(transparent calc(100% - 20px), #0003);
 }
 
 .clouds {
@@ -257,13 +278,14 @@
   }
 }
 
-.loading {
+p.loading {
+  margin-top: 20px;
   font-family: monospace;
   font-size: 3rem;
   white-space: nowrap;
 }
 
-.loading::after {
+p.loading::after {
   white-space: nowrap;
   content: '';
   animation: loading 4s linear infinite backwards;
@@ -290,7 +312,7 @@
 .icon-sky {
   width: 200px;
   height: 200px;
-  margin: 10px auto;
+  margin: 0 auto;
   border-radius: 1000%;
   padding: 20px;
   animation: iconSky 14s linear infinite backwards;
@@ -449,6 +471,12 @@
   text-transform: capitalize;
 }
 
+@media only screen and (min-width: 1260px) {
+  #game {
+    min-width: 60vw;
+  }
+}
+
 /* Desktop */
 @media only screen and (min-width: 768px) {
   .tab-content > .tab-pane {
@@ -459,16 +487,12 @@
    display: none;
   }
 
-  #game {
-    min-width: 60vw;
-  }
-
   .message-bubble:not(.sender) {
-    margin-left: 10px;
+    margin-right: 40px;
   }
 
   .message-bubble.sender {
-    margin-right: 10px;
+    margin-left: 40px;
   }
 }
 
@@ -477,9 +501,23 @@
   .tab-content > .tab-pane {
     width: 95%;
   }
+
+
+  .message-bubble {
+    margin-right: auto;
+    margin-left: auto;
+  }
 }
 
 .nav-link {
   text-shadow: none !important;
   border-radius: 0 !important;
+}
+
+.chat-panel {
+  display: none;
+}
+
+.chat-panel.visible {
+  display: block;
 }

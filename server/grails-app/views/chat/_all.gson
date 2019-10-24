@@ -1,0 +1,8 @@
+import werwolf.Chat
+import werwolf.User
+
+model {
+    User user
+}
+
+json g.render(template: 'single', var: 'chat', collection: user.getChats(), model: [user: user])

@@ -1,0 +1,11 @@
+import werwolf.Message
+import werwolf.User
+
+model {
+    Message message
+}
+
+json {
+    text message.getText()
+    if(message.getSender()) sender tmpl.'/user/unknown'(message.getSender())
+}

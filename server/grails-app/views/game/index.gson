@@ -1,13 +1,16 @@
 import werwolf.Game
-import werwolf.Action
+import werwolf.User
 
 model {
 	Game game
-	User user
+    User user
 }
 
 json {
     if(user) user tmpl.'/user/known'(user)
+
+    if(user) chats tmpl.'/chat/all'(user)
+
     if(game) game {
         night game.isNight
         users tmpl.'/user/known'('user', game.users)

@@ -1,0 +1,8 @@
+import werwolf.Chat
+import werwolf.User
+
+model {
+    User user
+}
+
+json tmpl.all(user: user)

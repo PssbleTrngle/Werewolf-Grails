@@ -1,0 +1,13 @@
+import werwolf.Chat
+import werwolf.User
+
+model {
+    Chat chat
+    User user
+}
+
+json {
+    name chat.getName() ?: 'Untitled'
+    id chat.id
+    messages g.render(template: 'message', var: 'message', collection: chat.getMessages())
+}
