@@ -3,7 +3,6 @@
 }
 
 #root {
-  background-color: #CCC;
   position: fixed;
   height: 100vh;
   width: 100vw;
@@ -47,12 +46,6 @@
   text-transform: capitalize;
 }
 
-@media only screen and (min-width: 1260px) {
-  #game {
-    min-width: 60vw;
-  }
-}
-
 /* Desktop */
 @media only screen and (min-width: 768px) {
   .tab-content > .tab-pane {
@@ -74,4 +67,8 @@
 .nav-link {
   text-shadow: none !important;
   border-radius: 0 !important;
+}
+
+.row.tab-content {
+  height: 100%;
 }

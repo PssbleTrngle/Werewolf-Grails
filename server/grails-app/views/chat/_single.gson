@@ -9,5 +9,6 @@ model {
 json {
     name chat.getName() ?: (chat.users.size() == 2  ? chat.users.find({ it.id != user.id }).getName() : 'Untitled')
     id chat.id
-    messages g.render(template: 'message', var: 'message', collection: chat.getMessages())
+    messages g.render(template: 'message', var: 'message', collection: chat.getMessages().sort({ it.id }))
+    users g.render(template: '/user/unknown', 'var': 'user', collection: chat.getUsers().sort({ it.id == user.id ? 0 : it.id }))
 }

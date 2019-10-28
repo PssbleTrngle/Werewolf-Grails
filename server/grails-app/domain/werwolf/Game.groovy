@@ -140,7 +140,7 @@ class Game {
 
             users.forEach({ User u1 ->
                 all.addToUsers(u1)
-                users.forEach({ User u2 ->
+                users.findAll({ it.id > u1.id }).forEach({ User u2 ->
 
                     Chat chat = new Chat()
                     chat.save()

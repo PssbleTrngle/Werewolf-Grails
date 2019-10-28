@@ -1,9 +1,17 @@
 #sidebar {
   padding: 15px 25px;
-  background-color: #AAA
+  background-color: #AAA;
+}
+
+#sidebar > * {
+	margin: 0 auto;
 }
 
 .token {
   font-size: 0.7rem;
   line-height: 0;
+}
+
+#sidebar .person {
+  width: 80%;
 }

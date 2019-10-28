@@ -23,7 +23,7 @@
   max-width: 70vw;
 
   margin: 15px 0;
-  --arrow: 10px;
+  --arrow: 5px;
   padding: 20px;
   border-radius: var(--arrow);
   background-color: var(--color);
@@ -110,12 +110,47 @@
 }
 
 .chat-panel {
-  padding: 0 30px;
-  display: none;
+  position: absolute;
+  min-width: 250px;
+  opacity: 1;
+  width: calc(100% - 15px);
+  height: calc(100% - 15px);
+  transition: opacity 0.3s linear, width 0.2s ease-in-out;
+  padding: 0;
+  padding-bottom: 140px;
 }
 
-.chat-panel.visible {
-  display: block;
+.chat-panel:not(.visible) {
+  pointer-events: none;
+  opacity: 0;
+  width: 0;
+}
+
+.messages {
+  max-height: 100%;
+  overflow: hidden;
+  overflow-y: scroll;
+  padding: 0 25px;
+  margin-right: 5px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+  transition: background 0.1s linear;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 .chat-name {
@@ -126,4 +161,32 @@
 
 .chat-name:hover {
   background-color: #0003;
+}
+
+.chat-back {
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.chat-users {
+  max-width: 200px;
+  text-align: center;
+  margin: 0 auto;
+  margin-bottom: 5px;
+}
+
+.chat-user:not(:last-child) {
+  margin-right: 5px;
+}
+
+.chat-user:not(:last-child)::after {
+  content: ',';
+}
+
+.chat-back {
+  transition: background 0.1s linear;
+}
+
+.chat-back:hover {
+  background-color: #0002;
 }

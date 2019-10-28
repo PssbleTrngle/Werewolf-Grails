@@ -7,12 +7,12 @@ model {
 }
 
 json {
-    if(user.token) token user.token
+    if (user.token) token user.token
     id user.id
     name user.name
     dead user.dead
 
-    if(displayAs) role {
+    if (displayAs) role {
         name displayAs.name
     }
 }

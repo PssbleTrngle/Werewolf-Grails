@@ -1,22 +1,49 @@
 import React, { Component } from 'react'
+import {GameApp} from './App'
 import {User} from './Person'
+import {SERVER_URL} from './config'
 
 interface Message {
     text: string;
-    sender: User;
+    sender?: User;
 }
 
 export interface Chat {
     id: number;
     name: string;
     messages: Message[];
+    users: User[];
 }
 
-class ChatInput extends Component<{},{}> {
+class ChatInput extends Component<{app: GameApp, chat: number},{text?: string}> {
+
+    constructor(props: any) {
+        super(props);
+        this.state = {}
+    }
+
+    send() {
+        let {app, chat} = this.props;
+        const {text} = this.state;
+
+        if(text) {
+            app.send('chat', {text, chat});
+            this.setState({text: ''});
+        }
+    }
+
+    change(target: HTMLInputElement) {
+        const text = target.value;
+        this.setState({text});
+    }
 
     render() {
+        const {text} = this.state;
+
         return (
-            <input placeholder='Message' type='text'></input>
+            <form onSubmit={(e) => {this.send(); e.preventDefault(); }}>
+                <input onChange={(e) => this.change(e.target)} placeholder='Message' type='text' value={text}></input>
+            </form>
         );
     }
 
@@ -26,48 +53,47 @@ class MessageBubble extends Component<{message: Message, isSender: boolean},{}> 
 
     render() {
         const {message, isSender} = this.props;
+        const {sender} = message;
 
         return (
             <div className={'message-bubble' + (isSender ? ' sender' : '')}>
                 <span>{message.text}</span>
-                <span className='sender'>{message.sender.name}</span>
+                <span className='sender'>{sender ? sender.name : 'Anonymous'}</span>
             </div>
         );
     }
 
 }
 
-export class ChatComponent extends Component<{token: string, chat: Chat, visible: boolean, panel: {back: () => void}},{}> {
+export class ChatComponent extends Component<{chat: Chat, visible: boolean, app: GameApp, panel: {back: () => void}},{}> {
 
     render() {
-        const {chat, token, visible, panel} = this.props;
-        const {name} = chat;
-
-        const hans: User = {name: 'Hans', id: 1, token: token};
-        const peter: User = {name: 'Peter', id: 2};
-
-        const messages: Message[] = [
-            {text: 'Ja ne chat kommt noch', sender: hans},
-            {text: 'Das ist ja cool', sender: peter},
-            {text: 'Danke ich weiß', sender: hans},
-        ];
+        const {chat, visible, panel, app} = this.props;
+        const {name, messages, users} = chat;
+        const token = app.token();
 
         return (
             <div className={`chat-panel ${visible ? 'visible' : ''}`}>
-                <p><a onClick={() => panel.back()}>Back</a></p>
-                {messages.map((msg, i) => <MessageBubble key={i} message={msg} isSender={msg.sender.token == token} />)}
-                <ChatInput />
+                <p className='chat-back' onClick={() => panel.back()}>Back</p>
+                <p className='chat-users'>{users.map((u, i) => 
+                    <span key={i} className='chat-user'>{u.name}</span>
+                )}</p>
+                <div className='messages'>
+                    {messages.map((msg, i) => <MessageBubble key={i} message={msg} isSender={msg.sender != undefined && msg.sender.token == token} />)}
+                </div>
+                <ChatInput chat={chat.id} app={app} />
             </div>
         );
     }
 
 }
 
-export class ChatPanel extends Component<{token: string, chats: Chat[]},{selected?: number}> {
+type PanelProps = {app: GameApp, token: string | null, chats: Chat[]};
+export class ChatPanel extends Component<PanelProps,{selected?: number}> {
 
-    constructor(props: {token: string, chats: Chat[]}) {
+    constructor(props: any) {
         super(props);
-        this.state = {selected: undefined}
+        this.state = {};
     }
 
     select(selected?: number) {
@@ -78,18 +104,23 @@ export class ChatPanel extends Component<{token: string, chats: Chat[]},{selecte
         this.select();
     }
 
+    shouldComponentUpdate(next: PanelProps): boolean {
+        if(next.token != this.props.token) this.select();
+        return true;
+    }
+
     render() {
-        const {token, chats} = this.props;
+        const {app, chats} = this.props;
         const {selected} = this.state;
 
         return (
             <>
-            <div className={`chat-panel px-0 ${selected ? '' : 'visible'}`}>
-                {chats.map((chat, i) => 
-                    <p className='chat-name'><a onClick={() => this.select(chat.id)}>{chat.name}</a></p>
+            <div className={`chat-panel ${selected ? '' : 'visible'}`}>
+                {chats.map((chat) => 
+                    <p key={chat.id} className='chat-name' onClick={() => this.select(chat.id)}>{chat.name}</p>
                 )}
             </div>
-            {chats.map((chat, i) => <ChatComponent visible={selected == chat.id} token={token} key={i} chat={chat} panel={this} />)}
+            {chats.map((chat) => <ChatComponent app={app} visible={selected == chat.id} key={chat.id} chat={chat} panel={this} />)}
             </>
         );
     }

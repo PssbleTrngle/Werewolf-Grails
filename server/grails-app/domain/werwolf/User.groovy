@@ -16,9 +16,11 @@ class User{
         game nullable: true
         role nullable: true
         screen nullable: true
+        token unique: true
     }
 
     static mapping = {
+        sort: 'id'
     }
 
     void kill() {

@@ -36,6 +36,12 @@ class Nav extends Component<{tabs: string[], active: string},{}> {
 
 }
 
+export interface GameApp {
+    send(action: string, params: any): void;
+    updateData(): void;
+    token(): string | null;
+}
+
 class App extends Component<{token?: string},{user?: User, game?: GameState, chats?: Chat[]}> {
 
     token(): string | null {
@@ -72,11 +78,11 @@ class App extends Component<{token?: string},{user?: User, game?: GameState, cha
         })
     }
 
-    sendAction(params: any) {
-        let token = this.token();
+    send(action: string, params: any, callback?: ((result: any) => void)) {
+        const token = this.token();
         if(token) {
             params.token = token;
-            fetch(SERVER_URL + '/action', {
+            fetch(SERVER_URL + '/' + action, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -85,44 +91,37 @@ class App extends Component<{token?: string},{user?: User, game?: GameState, cha
                 body: JSON.stringify(params)
             })
             .then(r => r.json())
-            .then(json => { this.updateData() });
+            .then(json => { 
+                if(callback) callback(json);
+                this.updateData();
+            });
         }
     }
 
     login(user: string) {
-        fetch(SERVER_URL + '/user', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ user })
-        })
-        .then(r => r.json())
-        .then(json => { 
+        this.send('user', {user}, json => {
             if(json.token)
-                localStorage.setItem('token', json.token)
-            this.updateData()
+                localStorage.setItem('token', json.token);
         });
     }
 
     render() {
         const {user, game, chats} = this.state;
-        const token = this.token();
 
         const panels: any = {sidebar: <Sidebar app={this} game={game} user={user} />};
 
         panels.game = (game ? <Game app={this} game={game} /> : <NoGame />)
-        if(token && chats) panels.chat = (<ChatPanel chats={chats} token={token}/>)
+        if(chats) panels.chat = (<ChatPanel token={this.token()} app={this} chats={chats}/>)
 
         let active = 'game';
+        let size: any = {game: 7, chat: 3, sidebar: 2};
 
         return (
             <>
             <Nav tabs={Object.keys(panels)} active={active} />
             <div className='row justify-content-center tab-content'>
                 {Object.keys(panels).map(id => 
-                    <div key={id} id={`${id}`} role="tabpanel" className={`tab-pane col-auto ${id == active ? 'active' : ''}`}>
+                    <div key={id} id={`${id}`} role="tabpanel" className={`tab-pane col-${size[id]} ${id == active ? 'active' : ''}`}>
                         {panels[id]}
                     </div>
                 )}

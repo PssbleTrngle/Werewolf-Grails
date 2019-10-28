@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {CLIENT_VERSION, REACT_VERSION, SERVER_URL} from './config'
 
 import { Person, User } from './Person'
+import { GameApp } from './App'
 
 interface Decision {
 	selection: any,
@@ -24,12 +25,8 @@ export interface GameState {
 	night: boolean;
 }
 
-interface App {
-	sendAction(params: Object): void
-}
-
 type size = 'big' | 'small' | 'tiny';
-class People extends Component<{users: User[], size: size, action?: string, app?: App, decisions?: Decision[], voters?: boolean},{}> {
+class People extends Component<{users: User[], size: size, action?: string, app: GameApp, decisions?: Decision[], voters?: boolean},{}> {
 
 	render() {
 		const {users, size, action, app, decisions, voters} = this.props;
@@ -38,7 +35,7 @@ class People extends Component<{users: User[], size: size, action?: string, app?
 
 			let click = !action ? undefined : () => {
 				let target = user.id;
-				if(app) app.sendAction({ action, target, })
+				app.send('action', { action, target, })
 			};
 
 			let out = [ <Person key={user.id} click={click} user={user} /> ];
@@ -74,7 +71,7 @@ class People extends Component<{users: User[], size: size, action?: string, app?
 
 }
 
-class ScreenComponent extends Component<{screen: Screen, app?: App},{}> {
+class ScreenComponent extends Component<{screen: Screen, app: GameApp},{}> {
 
 	render() {
 		const {action, options, targets, voters, result, decisions} = this.props.screen;
@@ -85,7 +82,7 @@ class ScreenComponent extends Component<{screen: Screen, app?: App},{}> {
 				{options.length > 0 &&<div className='row justify-content-center mb-5'>
 					{options.map(option =>	{
 						let click = () => {
-							if(app) app.sendAction({ action, option })
+							app.send('action', { action, option })
 						};
 						return <button onClick={click} key={option} className='option'>{option}</button>
 					})}
@@ -125,7 +122,7 @@ class Sky extends Component<{message: string},{}> {
 
 }
 
-export class Game extends Component<{game: GameState, app: App},{}> {
+export class Game extends Component<{game: GameState, app: GameApp},{}> {
 
 	render() {
 		const {screen, users, night} = this.props.game;

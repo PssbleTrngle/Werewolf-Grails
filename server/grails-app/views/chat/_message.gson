@@ -7,5 +7,5 @@ model {
 
 json {
     text message.getText()
-    if(message.getSender()) sender tmpl.'/user/unknown'(message.getSender())
+    if(message.sender) sender tmpl.'/user/unknown'(user: message.sender)
 }
