@@ -27,7 +27,6 @@ class Game {
                     screen.getUsers().each({ User voter ->
                         if (voter.screen == null || voter.screen.id == screen.id) {
                             Action next = screen.action().nextAction(voter)
-                            println "Next: ${voter.screen?.action}; ${next?.name}"
                             if(next) voter.setNextAction(next)
                         }
                     })
@@ -36,35 +35,56 @@ class Game {
         })
     }
 
+    Set<User> alive() {
+        this.getUsers().findAll({User user -> !user.isDead()})
+    }
+
+    boolean hasOpen() {
+        screens.count({ Vote screen -> screen.isOpen() }) > 0
+    }
+
     void checkDone() {
 
-        def alive = this.getUsers().findAll({User user -> !user.isDead()})
         checkScreens()
 
-        int unfinished = screens.count({ Vote screen -> screen.isOpen() })
-
-        if (unfinished == 0) {
-
+        if (!hasOpen()) {
             /* TODO sort votes by priority */
+
             screens.each({ Vote screen ->
 
                 def result = screen.calculateResult()
-                screen?.users?.clear()
-                screen?.decisions?.clear()
 
                 if (screen.action()) User.withTransaction({
-                    screen.action().run(alive, result)
+                    screen.action().run(alive(), result)
                 })
+
+            })
+        }
+
+        /* If there have not been created any new screens (ex.: the Hunter on death) */
+        if (!hasOpen()) {
+            screens.each({ Vote screen ->
+                println "Screen: $screen.action"
+
+                User.withTransaction({
+                    screen.users.each({User user ->
+                        if(user.screen?.id == screen.id) user.setScreen(null)
+                        user.save()
+                    })
+                })
+
+                screen?.decisions?.clear()
+                screen?.users?.clear()
+                screen.setGame(null)
 
             })
 
             screens.clear()
 
-            alive.each({ User user ->
-                /* TODO insert pending screen */
+            users.each({ User user ->
 
                 Action action = Action.get(isIsNight() ? 'lynch' : (user.role?.nightAction ?: 'sleep'))
-                if(user.isDead()) Action.get('dead')
+                if(user.isDead()) action = Action.get('dead')
 
                 user.setNextAction(action)
 

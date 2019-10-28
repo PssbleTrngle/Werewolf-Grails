@@ -1,0 +1,129 @@
+#chat {
+  padding: 15px 0;
+  padding-bottom: 50px;
+  background-color: #AAA
+}
+
+#chat input {
+  position: absolute;
+  bottom: 10px;
+  left: 15px;
+  width: calc(100% - 30px);
+
+  border-radius: 20px;
+  height: 40px;
+
+  padding: 5px 15px;
+}
+
+.message-bubble {
+  --color: #444;
+  color: #EEE;
+
+  max-width: 70vw;
+
+  margin: 15px 0;
+  --arrow: 10px;
+  padding: 20px;
+  border-radius: var(--arrow);
+  background-color: var(--color);
+  position: relative;
+
+  transition: background 0.1s linear;
+}
+
+.message-bubble:hover {
+  --color: #555;
+}
+
+.message-bubble.sender {
+  --color: #777;
+  color: #000;
+}
+
+.message-bubble.sender:hover {
+  --color: #888;
+}
+
+.message-bubble::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: #0008;
+
+  transition: border 0.1s linear;
+}
+
+.message-bubble::after {
+
+  content: '';
+  position: absolute;
+  top: calc(100% - var(--arrow) * 3);
+
+  left: calc(-2 * var(--arrow));
+
+  border-top: calc(var(--arrow)) transparent solid;
+  border-left: calc(var(--arrow)) transparent solid;
+
+  border-bottom: calc(var(--arrow)) var(--color) solid;
+  border-right: calc(var(--arrow)) var(--color) solid;
+
+}
+
+.message-bubble.sender::after {
+
+  left: 100%;
+
+  border-top: calc(var(--arrow)) transparent solid;
+  border-right: calc(var(--arrow)) transparent solid;
+
+  border-bottom: calc(var(--arrow)) var(--color) solid;
+  border-left: calc(var(--arrow)) var(--color) solid;
+
+}
+
+.message-bubble .sender {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  font-size: 0.6rem;
+}
+
+/* Desktop */
+@media only screen and (min-width: 768px) {
+  .message-bubble:not(.sender) {
+    margin-right: 40px;
+  }
+
+  .message-bubble.sender {
+    margin-left: 40px;
+  }
+}
+
+/* Mobile */
+@media only screen and (max-width: 767px) {
+  .message-bubble {
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+.chat-panel {
+  padding: 0 30px;
+  display: none;
+}
+
+.chat-panel.visible {
+  display: block;
+}
+
+.chat-name {
+  padding: 10px 80px;
+  background-color: transparent;
+  transition: background 0.1s linear;
+}
+
+.chat-name:hover {
+  background-color: #0003;
+}

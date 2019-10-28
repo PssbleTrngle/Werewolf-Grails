@@ -9,7 +9,7 @@ class BootStrap {
             new Role(name: 'seer', nightAction: 'see').save()
             new Role(name: 'witch').save()
             new Role(name: 'werewolf', nightAction: 'eat').save()
-            new Role(name: 'hunter', deathAction: 'hunt').save()
+            new RoleHunter(name: 'hunter', deathAction: 'hunt').save()
         }
 
         Action.init()

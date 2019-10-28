@@ -37,7 +37,7 @@ class Action {
         final Closure<Boolean> OWN_ROLE = { h, u -> h.role.id == u.role.id }
         final Closure<Boolean> OTHER_ROLE = { h, u -> !OWN_ROLE(h, u) }
 
-        final Closure<Void> KILL = { users, selection -> if(selection instanceof User) selection.setDead(true) }
+        final Closure<Void> KILL = { users, selection -> if(selection instanceof User) selection.kill() }
 
         register(new Action('eat', 'Who you do you want to eat?',
                 OTHER_ROLE,

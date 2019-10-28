@@ -1,0 +1,9 @@
+#sidebar {
+  padding: 15px 25px;
+  background-color: #AAA
+}
+
+.token {
+  font-size: 0.7rem;
+  line-height: 0;
+}

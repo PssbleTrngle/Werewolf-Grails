@@ -2,6 +2,7 @@ package werwolf
 
 class Chat {
 
+    int id
     String name
 
     static belongsTo = User

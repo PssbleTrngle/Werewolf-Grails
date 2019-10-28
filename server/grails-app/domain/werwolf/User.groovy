@@ -1,6 +1,6 @@
 package werwolf
 
-import javax.script.ScriptEngine
+import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
 class User{
 
@@ -19,16 +19,12 @@ class User{
     }
 
     static mapping = {
-        sort 'id'
     }
 
-    void setDead(boolean dead) {
-        if(dead) withTransaction({
-            setNextAction(Action.get(role.deathAction ?: 'dead'))
-            save()
-        })
-
-        this.dead = dead;
+    void kill() {
+        this.setNextAction(Action.get('dead'))
+        Role role = GrailsHibernateUtil.unwrapIfProxy(this.getRole())
+        this.setDead(!role.onDeath(this))
     }
 
     void setNextAction(Action next) {

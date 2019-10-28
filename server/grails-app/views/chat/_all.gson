@@ -5,4 +5,4 @@ model {
     User user
 }
 
-json g.render(template: 'single', var: 'chat', collection: user.getChats(), model: [user: user])
+json g.render(template: 'single', var: 'chat', collection: user.getChats().sort({ it.id }), model: [user: user])
