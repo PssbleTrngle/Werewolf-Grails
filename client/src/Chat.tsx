@@ -84,10 +84,10 @@ export class ChatPanel extends Component<{token: string, chats: Chat[]},{selecte
 
         return (
             <>
-            <div className={`chat-panel ${selected ? '' : 'visible'}`}>
+            <div className={`chat-panel px-0 ${selected ? '' : 'visible'}`}>
                 {chats.map((chat, i) => 
-                    <p><a onClick={() => this.select(chat.id)}>{chat.name}</a></p>
-            )}
+                    <p className='chat-name'><a onClick={() => this.select(chat.id)}>{chat.name}</a></p>
+                )}
             </div>
             {chats.map((chat, i) => <ChatComponent visible={selected == chat.id} token={token} key={i} chat={chat} panel={this} />)}
             </>

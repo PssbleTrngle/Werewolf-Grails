@@ -1,0 +1,4 @@
+package werwolf
+
+class RoleHunter {
+}

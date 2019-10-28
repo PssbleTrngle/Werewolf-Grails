@@ -449,7 +449,7 @@ p.loading::after {
 }
 
 #chat {
-  padding: 15px 30px;
+  padding: 15px 0;
   padding-bottom: 50px;
   background-color: #AAA
 }
@@ -515,9 +515,20 @@ p.loading::after {
 }
 
 .chat-panel {
+  padding: 0 30px;
   display: none;
 }
 
 .chat-panel.visible {
   display: block;
+}
+
+.chat-name {
+  padding: 10px 80px;
+  background-color: transparent;
+  transition: background 0.1s linear;
+}
+
+.chat-name:hover {
+  background-color: #0003;
 }
