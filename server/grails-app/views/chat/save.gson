@@ -1,0 +1,7 @@
+model {
+	boolean success
+}
+
+json {
+    success success
+}
