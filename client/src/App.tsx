@@ -6,8 +6,10 @@ import 'whatwg-fetch'
 import JWT from 'jsonwebtoken'
 
 import { Person, User } from './Person'
-import { Game, NoGame, GameState } from './Game'
+import { Game, NoGame, GameState, GamePreview } from './Game'
 import { ChatPanel, Chat } from './Chat'
+
+const UPDATE = 1000;
 
 class Nav extends Component<{tabs: string[], active: string},{}> {
 
@@ -42,32 +44,34 @@ export interface GameApp {
     token(): string | null;
 }
 
-class App extends Component<{token?: string},{user?: User, game?: GameState, chats?: Chat[]}> {
+type AppState = {user?: User, game?: GameState, chats: Chat[], games?: GamePreview[]};
+class App extends Component<{token?: string},AppState> {
+
+    initialState: AppState = {user: undefined, game: undefined, chats: [], games: undefined};
 
     token(): string | null {
-        return localStorage.getItem('token');
+        return this.props.token || localStorage.getItem('token');
     }
 
-    constructor(props: {token?: string}) {
+    constructor(props: any) {
         super(props)
-        if(props.token) localStorage.setItem('token', props.token);
-        this.state = {}
+        this.state = this.initialState;
     }
 
     updateData() {
         let token = this.token();
-        if(token)
+        if(token) 
             fetch(SERVER_URL + `/game?token=${token}`)
                 .then(r => r.json())
                 .then(json => this.setState(json))
-                .catch(error => {});
+                .catch(error => { this.setState(this.initialState)});
     }
 
     componentDidMount() {
 
         let update = () => {
             this.updateData();
-            window.setInterval(() => this.updateData(), 2000);
+            window.setInterval(() => this.updateData(), UPDATE);
         }
 
         if(this.token())
@@ -106,19 +110,22 @@ class App extends Component<{token?: string},{user?: User, game?: GameState, cha
     }
 
     render() {
-        const {user, game, chats} = this.state;
+        const {user, game, chats, games} = this.state;
 
-        const panels: any = {sidebar: <Sidebar app={this} game={game} user={user} />};
+        if(user) document.title = `Werewolf - ${user.name}`;
 
-        panels.game = (game ? <Game app={this} game={game} /> : <NoGame />)
-        if(chats) panels.chat = (<ChatPanel token={this.token()} app={this} chats={chats}/>)
+        const panels: any = {};
+
+        if(user) panels.sidebar = <Sidebar app={this} game={game} user={user} />
+        panels.game = (game ? <Game app={this} game={game} /> : <NoGame games={games || []} user={user} app={this} />)
+        if(chats.length > 0) panels.chat = (<ChatPanel token={this.token()} app={this} chats={chats || []}/>)
 
         let active = 'game';
-        let size: any = {game: 7, chat: 3, sidebar: 2};
+        let size: any = {game: chats.length ? 7 : 8, chat: chats.length ? 3 : 2, sidebar: 2};
 
         return (
             <>
-            <Nav tabs={Object.keys(panels)} active={active} />
+            {game && <Nav tabs={Object.keys(panels)} active={active} />}
             <div className='row justify-content-center tab-content'>
                 {Object.keys(panels).map(id => 
                     <div key={id} id={`${id}`} role="tabpanel" className={`tab-pane col-${size[id]} ${id == active ? 'active' : ''}`}>
@@ -139,7 +146,7 @@ class Sidebar extends Component<{game?: GameState, user?: User, app: {login(user
         return (
             <>
             { user && <Person showRole={true} user={user} /> }
-            { user && game && 
+            { user && game && user.token == 'banana' && 
                 <select defaultValue={user.name} onChange={(e) => app.login(e.target.value)}>
                     {game.users.map(user => {
                         return <option key={user.id}>{user.name}</option>

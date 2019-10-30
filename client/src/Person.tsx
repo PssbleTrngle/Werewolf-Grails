@@ -37,8 +37,7 @@ export class Person extends Component<PersonProps,{}> {
 				{vote && <Vote vote={vote} />}
 				{votes && votes.map(v => <Voted key={v} by={v} />)}
 
-				{showRole && <p className='text-capitalize'>{user.role ? user.role.name : '???'}</p>}
-				{showRole && user.token && <small className='token'>{user.token}</small>}
+				{showRole && user.role && <p className='text-capitalize'>{user.role.name}</p>}
 			</div>
 		);
 	}

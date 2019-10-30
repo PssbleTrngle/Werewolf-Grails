@@ -13,6 +13,7 @@
   padding: 10px;
   width: 150px;
   overflow-x: hidden;
+  font-size: 2rem;
 }
 
 .person.dead {
@@ -21,10 +22,12 @@
 
 .small .person {
   width: 100px;
+  font-size: 1.5rem;
 }
 
 .tiny .person {
   width: 70px;
+  font-size: 1rem;
 }
 
 .person img {
@@ -60,7 +63,13 @@
 /* Mobile */
 @media only screen and (max-width: 767px) {
   .tab-content > .tab-pane {
-    width: 95%;
+    max-width: 100vw;
+    min-width: 100vw;
+    margin: 0;
+  }
+
+  .row.tab-content {
+    margin: 0;
   }
 }
 
@@ -69,6 +78,12 @@
   border-radius: 0 !important;
 }
 
+.tab-pane {
+	transition: width 1s linear;
+}
+
 .row.tab-content {
   height: 100%;
+  width: 100vw;
+  background-color: #AAA;
 }

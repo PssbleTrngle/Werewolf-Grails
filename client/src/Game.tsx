@@ -11,7 +11,7 @@ interface Decision {
 
 interface Screen {
 	message: string,
-	action: string,
+	action?: string,
 	targets: User[],
 	voters: User[],
 	options: string[],
@@ -21,7 +21,7 @@ interface Screen {
 
 export interface GameState {
 	users: User[];
-	screen: Screen;
+	screen?: Screen;
 	night: boolean;
 }
 
@@ -79,6 +79,7 @@ class ScreenComponent extends Component<{screen: Screen, app: GameApp},{}> {
 
 		return (
 			<div className='screen pt-4'>
+				{result && <h1 className='result'>{result}</h1>}
 				{options.length > 0 &&<div className='row justify-content-center mb-5'>
 					{options.map(option =>	{
 						let click = () => {
@@ -125,7 +126,15 @@ class Sky extends Component<{message: string},{}> {
 export class Game extends Component<{game: GameState, app: GameApp},{}> {
 
 	render() {
-		const {screen, users, night} = this.props.game;
+		let {screen, users, night} = this.props.game;
+
+		if(!screen) screen = {
+			message: 'Waiting for Players',
+			targets: [],
+			voters: users,
+			options: [],
+			result: `${users.length}/5`,
+		}
 
 		return (
 			<div className={'game-container ' + (night ? 'night' : 'day')}>
@@ -153,15 +162,50 @@ export class Icon extends Component<{},{}> {
 
 }
 
-export class NoGame extends Component<{},{}> {
+export interface GamePreview {
+	name: string;
+	id: number;
+	userCount: number;
+}
+
+export class NoGame extends Component<{user?: User, app: GameApp, games: GamePreview[]},{}> {
+
+	createGame(dev: boolean = false) {
+		this.props.app.send('game', { action: 'create', dev });
+	}
+
+	joinGame(game: number) {
+		this.props.app.send('game', { action: 'join', game });
+	}
 
 	render() {
+		const { user, games } = this.props;
+
+		if(user)
+			return (
+				<div className='game-container loading night'>
+					<Icon />
+					<div className='row justify-content-center mt-5'>
+						<button onClick={() => this.createGame()} className='create-game'>Create Game</button>
+						<button onClick={() => this.createGame(true)} className='create-game'>Create Dev Game</button>
+					</div>
+
+					<h1 className='mt-5'>Or join a game</h1>
+					<div className='games mt-2'>{games.map(game => 
+						<div onClick={(() => this.joinGame(game.id))} className='join' key={game.id}>
+						<span>{game.name} {game.id}</span>
+						<span className='badge badge-info'>{game.userCount}/5</span>
+					</div>
+					)}</div>
+				</div>
+			);
+
 		return (
 			<div className='game-container loading night'>
 				<Icon />
 				<p className='loading'>Loading</p>
 			</div>
-		)
+		);
 
 	}
 
