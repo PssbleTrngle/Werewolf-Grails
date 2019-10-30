@@ -42,7 +42,10 @@ class Action {
         register(new Action('eat', 'Who you do you want to eat?',
                 OTHER_ROLE,
                 OWN_ROLE,
-                KILL)
+                { user, selection ->
+                    KILL(user, selection)
+
+                })
                 .displayAs('Werewolf')
         )
 
@@ -55,6 +58,9 @@ class Action {
 
         register(new Action('sleep', 'You are sleeping', NONE, SELF))
         register(new Action('dead', 'You are dead', NONE, SELF))
+
+        register(new Action('won', 'You lost', NONE, SELF))
+        register(new Action('lost', 'You won', NONE, SELF))
 
     }
 

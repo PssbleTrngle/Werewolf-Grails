@@ -2,12 +2,16 @@ package werwolf
 
 import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
 
-class User{
+class User {
 
     int id
     String name
     String token
     boolean dead = false
+
+    Role unwrapRole() {
+        (Role) GrailsHibernateUtil.unwrapIfProxy(getRole())
+    }
 
     static belongsTo = [ game: Game, role: Role, screen: Vote ]
     static hasMany = [ chats: Chat ]

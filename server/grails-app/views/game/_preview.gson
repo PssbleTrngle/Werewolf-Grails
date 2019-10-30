@@ -1,0 +1,12 @@
+import werwolf.Decision
+import werwolf.Game
+
+model {
+	Game game
+}
+
+json {
+    name 'Game'
+    id game.id
+    userCount game.getUsers().size()
+}

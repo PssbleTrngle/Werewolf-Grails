@@ -41,6 +41,7 @@ class Vote {
     }
 
     boolean isOpen() {
+        if(this.action == 'ready') return false
         return !isStatic() && decisions?.size() < users?.size()
     }
 
@@ -48,6 +49,7 @@ class Vote {
         return !this.isOpen() && !isStatic()
     }
 
+    @Deprecated
     void checkDone() {
 
     }

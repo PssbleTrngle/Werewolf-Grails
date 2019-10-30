@@ -28,13 +28,10 @@ class UserController {
     static User getUser(String token) {
 
         User existing = User.findByToken(token)
-        if(existing) return existing
+        if (existing) return existing
 
         User.withTransaction({
-
-            User user = new User('name': 'Dev', 'token': token).save()
-            createDevGame(user)
-
+            new User('name': token, 'token': token).save()
         })
 
         null

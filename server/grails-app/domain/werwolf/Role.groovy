@@ -2,7 +2,7 @@ package werwolf
 
 import grails.rest.Resource
 
-class Role {
+abstract class Role {
 
     /** *
      * @return boolean: true if death should be canceled
@@ -13,7 +13,8 @@ class Role {
     String name
     String nightAction
 
-    static hasMany = [ user: User ]
+    abstract boolean triggerWin(Game game);
+    boolean hasWon(Game game) { triggerWin(game) }
 
     static constraints = {
         nightAction nullable: true

@@ -1,7 +1,12 @@
 package werwolf
 
+import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
+
 class Game {
 
+    static final MIN_PLAYERS = 3
+
+    boolean started
     int id
     boolean isNight = false
 
@@ -16,6 +21,10 @@ class Game {
     static mapping = {
         users sort: 'id'
         screens cascade: 'all-delete-orphan'
+    }
+
+    boolean isOpen() {
+        return !isStarted()
     }
 
     void checkScreens() {
@@ -64,7 +73,6 @@ class Game {
         /* If there have not been created any new screens (ex.: the Hunter on death) */
         if (!hasOpen()) {
             screens.each({ Vote screen ->
-                println "Screen: $screen.action"
 
                 User.withTransaction({
                     screen.users.each({User user ->
@@ -81,10 +89,21 @@ class Game {
 
             screens.clear()
 
+            Role won = hasWon()
+            if(won) {
+                int wonCount = getUsers().count({ it.unwrapRole().hasWon(this) })
+                String verb = wonCount == 1 ? 'has' : 'have'
+                String winMessage = "The ${won.getName()} $verb won"
+
+                println winMessage
+            }
+
             users.each({ User user ->
 
                 Action action = Action.get(isIsNight() ? 'lynch' : (user.role?.nightAction ?: 'sleep'))
                 if(user.isDead()) action = Action.get('dead')
+
+                if(won) action = Action.get(user.getRole().hasWon(this) ? 'won' : 'lost')
 
                 user.setNextAction(action)
 
@@ -98,7 +117,16 @@ class Game {
         }
     }
 
-    void assignRoles(List<User> users) {
+    Role hasWon() {
+        for(User user : alive()) {
+            Role role = user.unwrapRole()
+            if(role.triggerWin(this)) return role
+        }
+
+        null
+    }
+
+    void assignRoles() {
 
         Role villager = Role.findByName('villager')
         Role werewolf = Role.findByName('werewolf')
@@ -121,7 +149,6 @@ class Game {
             users.eachWithIndex({user, index ->
                 user.setRole(roles.get(index))
                 user.setScreen(ready)
-                this.addToUsers(user)
                 user.save()
             })
 
@@ -131,7 +158,7 @@ class Game {
 
     }
 
-    void createChats(List<User> users) {
+    void createChats() {
 
         Chat.withTransaction({
 
@@ -159,15 +186,39 @@ class Game {
 
     }
 
+    boolean isReady() {
+        return this.getUsers().size() >= MIN_PLAYERS
+    }
+
+    Game start() {
+        assert !isStarted()
+
+        setStarted(true)
+        assignRoles()
+        createChats()
+        save()
+
+        this
+    }
+
+    void join(User user) {
+        addToUsers(user)
+        user.setGame(this)
+        user.save()
+        save()
+        if(isReady()) start()
+    }
+
     static Game createGame(List<User> users) {
         Game game = new Game()
-
         game.save()
-        game.assignRoles(users)
-        game.createChats(users)
 
-        return game
-
+        users.each({user ->
+            game.addToUsers(user)
+            user.setGame(game)
+            user.save()
+        })
+        game.save()
     }
 
 }

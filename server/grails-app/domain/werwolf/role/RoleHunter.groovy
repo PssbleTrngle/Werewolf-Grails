@@ -1,6 +1,11 @@
-package werwolf
+package werwolf.role
 
-class RoleHunter extends Role {
+import werwolf.Action
+import werwolf.Role
+import werwolf.User
+import werwolf.Vote
+
+class RoleHunter extends RoleVillager {
 
     @Override
     boolean onDeath(User user) {

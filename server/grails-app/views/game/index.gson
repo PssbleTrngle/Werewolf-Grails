@@ -1,3 +1,4 @@
+import werwolf.Chat
 import werwolf.Game
 import werwolf.User
 
@@ -10,8 +11,12 @@ json {
     if(user) user tmpl.'/user/known'(user)
 
     if(user) chats tmpl.'/chat/all'(user)
+    else chats new Chat[0]
 
     if(game) game {
+
+        ready game.isReady()
+
         night game.isNight
         users tmpl.'/user/known'('user', game.users)
         if(user.screen) screen {
@@ -20,7 +25,7 @@ json {
                 action user.screen.action
                 targets g.render(template: '/user/unknown', var: 'user', collection: user.screen.action().getTargets(game.users, user))
                 voters g.render(template: '/user/unknown', var: 'user', collection: user.screen.action().getVoters(game.users, user),
-                            model: [displayAs: (user.dead && game.revealDead) ? user.role : user.screen.action().displayAs()])
+                            model: [displayAs: (user.isDead() && game.isRevealDead()) ? user.getRole() : user.screen.action().displayAs()])
             }
 
             options user.screen.action().options
@@ -29,5 +34,7 @@ json {
             if(user.screen.result) result user.screen.result
             decisions g.render(template: 'decision', var: 'decision', collection: user.screen.decisions, model: [anonymous: user.screen.anonymous])
         }
+    } else {
+        games g.render(template: 'preview', var: 'game', collection: Game.findAll({ true }))
     }
 }
