@@ -16,7 +16,7 @@ class GameController {
         Game.withTransaction({
 
             println "Creating Game for User $user.token"
-            Game game = Game.createGame([user])
+            Game game = Game.createGame(user)
             game.save()
 
         })

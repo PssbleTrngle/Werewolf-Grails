@@ -67,10 +67,6 @@
     min-width: 100vw;
     margin: 0;
   }
-
-  .row.tab-content {
-    margin: 0;
-  }
 }
 
 .nav-link {
@@ -83,6 +79,7 @@
 }
 
 .row.tab-content {
+  margin: 0 auto;
   height: 100%;
   width: 100vw;
   background-color: #AAA;

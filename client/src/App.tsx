@@ -121,7 +121,8 @@ class App extends Component<{token?: string},AppState> {
         if(chats.length > 0) panels.chat = (<ChatPanel token={this.token()} app={this} chats={chats || []}/>)
 
         let active = 'game';
-        let size: any = {game: chats.length ? 7 : 8, chat: chats.length ? 3 : 2, sidebar: 2};
+        /* TODO This is aweful remove */
+        let size: any = {game: chats.length ? 7 : (game ? 8 : 12), chat: chats.length ? 3 : 2, sidebar: 2};
 
         return (
             <>

@@ -136,7 +136,7 @@ class Game {
         for(int i = 0; i < users.size() / 3; i++)
             roles.add(werewolf)
 
-        supporters.each({ if(roles.size() < users.size()) roles.add(it) })
+        /* supporters.each({ if(roles.size() < users.size()) roles.add(it) }) */
 
         while(roles.size() < users.size())
             roles.add(villager)
@@ -202,6 +202,8 @@ class Game {
     }
 
     void join(User user) {
+        assert user.getGame() == null : 'User is already in a game'
+
         addToUsers(user)
         user.setGame(this)
         user.save()
@@ -209,7 +211,7 @@ class Game {
         if(isReady()) start()
     }
 
-    static Game createGame(List<User> users) {
+    static Game createGame(User... users) {
         Game game = new Game()
         game.save()
 
