@@ -1,27 +1,57 @@
 package werwolf
 
-class Vote {
+import werwolf.screen.ScreenDead
+import werwolf.screen.ScreenSleep
+
+abstract class Vote {
 
     int id
-    String result
-    boolean done = false
-    boolean anonymous = false
+    final boolean anonymous = false
 
-    String action
-
-    boolean isStatic() {
-        Action action = action()
-        boolean noTargets = true
-
-        if(action) users.each({ User voter ->
-            noTargets = noTargets && action.getTargets(voter?.game?.users, voter).isEmpty()
-        })
-
-        action == null || (action.options.length == 0 && noTargets)
+    Vote(String message, String result = null) {
+        this.message = message
+        this.result = result
     }
 
-    Action action() {
-        Action.get(action)
+    final Vote nextScreen(User user) {
+        if(user.isDead()) new ScreenDead()
+        Vote next = this.next(user)
+        next ?: new ScreenSleep()
+    }
+
+    final String message
+    final String result
+
+    abstract String getKey()
+
+    abstract String[] options();
+
+    private Vote next(User user) { null }
+
+    abstract void run(User user, def selection);
+
+    Set<User> getVoters(Set<User> users, User holder) {
+        return users.findAll({ u -> !u.isDead() && this.isVoter(holder, u) })
+    }
+
+    Set<User> getTargets(Set<User> users, User holder) {
+        return users.findAll({ u -> !u.isDead() && this.isTarget(holder, u) })
+    }
+
+    protected abstract boolean isTarget(User user, User self)
+
+    protected abstract boolean isVoter(User user, User self)
+
+    Role displayAs() { Role.findByName('Villager') }
+
+    boolean isStatic() {
+        boolean noTargets = true
+
+        users.each({ User voter ->
+            noTargets = noTargets && getTargets(voter?.game?.users, voter).isEmpty()
+        })
+
+        options().length == 0 && noTargets
     }
 
     def calculateResult() {
@@ -41,7 +71,6 @@ class Vote {
     }
 
     boolean isOpen() {
-        if(this.action == 'ready') return false
         return !isStatic() && decisions?.size() < users?.size()
     }
 
