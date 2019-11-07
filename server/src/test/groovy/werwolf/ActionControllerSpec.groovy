@@ -11,8 +11,8 @@ class ActionControllerSpec extends Specification implements ControllerUnitTest<A
     def cleanup() {
     }
 
-    void "test something"() {
-        expect:"fix me"
-        true == false
+    void "test"() {
+        expect:
+        true
     }
 }

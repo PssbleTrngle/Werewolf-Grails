@@ -1,7 +1,7 @@
 #chat {
   padding: 15px 0;
   padding-bottom: 50px;
-  background-color: #AAA
+  background-color: transparent
 }
 
 #chat input {
@@ -28,8 +28,6 @@
   border-radius: var(--arrow);
   background-color: var(--color);
   position: relative;
-
-  transition: background 0.1s linear;
 }
 
 .message-bubble:hover {
@@ -156,7 +154,6 @@
 .chat-name {
   padding: 10px 80px;
   background-color: transparent;
-  transition: background 0.1s linear;
 }
 
 .chat-name:hover {
@@ -181,10 +178,6 @@
 
 .chat-user:not(:last-child)::after {
   content: ',';
-}
-
-.chat-back {
-  transition: background 0.1s linear;
 }
 
 .chat-back:hover {

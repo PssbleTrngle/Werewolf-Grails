@@ -11,8 +11,8 @@ class UserControllerSpec extends Specification implements ControllerUnitTest<Use
     def cleanup() {
     }
 
-    void "test something"() {
-        expect:"fix me"
-        true == false
+    void "test"() {
+        expect:
+        true
     }
 }

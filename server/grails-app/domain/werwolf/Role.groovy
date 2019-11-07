@@ -1,7 +1,5 @@
 package werwolf
 
-import grails.rest.Resource
-
 abstract class Role {
 
     /** *
@@ -11,12 +9,10 @@ abstract class Role {
 
     int id
     String name
-    String nightAction
+
+    Screen nightScreen() { null }
 
     abstract boolean triggerWin(Game game);
     boolean hasWon(Game game) { triggerWin(game) }
 
-    static constraints = {
-        nightAction nullable: true
-    }
 }

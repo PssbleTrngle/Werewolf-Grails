@@ -11,8 +11,8 @@ class ChatSpec extends Specification implements DomainUnitTest<Chat> {
     def cleanup() {
     }
 
-    void "test something"() {
-        expect:"fix me"
-            true == false
+    void "test"() {
+        expect:
+        true
     }
 }

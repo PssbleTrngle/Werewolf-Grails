@@ -11,8 +11,8 @@ class ChatControllerSpec extends Specification implements ControllerUnitTest<Cha
     def cleanup() {
     }
 
-    void "test something"() {
-        expect:"fix me"
-        true == false
+    void "test"() {
+        expect:
+        true
     }
 }

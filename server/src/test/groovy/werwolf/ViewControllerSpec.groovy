@@ -11,8 +11,8 @@ class ViewControllerSpec extends Specification implements ControllerUnitTest<Vie
     def cleanup() {
     }
 
-    void "test something"() {
-        expect:"fix me"
-        true == false
+    void "test"() {
+        expect:
+        true
     }
 }

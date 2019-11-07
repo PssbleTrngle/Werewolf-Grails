@@ -1,6 +1,6 @@
 #sidebar {
   padding: 15px 25px;
-  background-color: #AAA;
+  background-color: transparent;
 }
 
 #sidebar > * {

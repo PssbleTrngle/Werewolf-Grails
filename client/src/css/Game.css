@@ -26,14 +26,12 @@
   padding: 30px 0;
 }
 
-.game-container.night {
-  background-color: #222;
-  color: #FFF;
+.night .game-container {
+  background-color: #0007;
 }
 
-.game-container.day {
-  background-color: #EEE;
-  color: #222;
+.day .game-container {
+  background-color: #515e3c;
 }
 
 .option {
@@ -153,11 +151,14 @@
 }
 
 .sky-container {
+  --h: 20px;
+
   position: relative;
   top: 0;
   left: 0;
   overflow: hidden;
   width: 100%;
+  clip-path: polygon(100% 0%, 0% 0%, 0 calc(100% - var(--h)), 10% 100%, 28% calc(100% - var(--h)), 40% calc(100% - var(--h)), 51% 100%, 70% 100%, 75% calc(100% - var(--h)), 90% calc(100% - var(--h)), 100% 100%);
 }
 
 .game-container::after {
@@ -175,7 +176,7 @@
 .sky {
   padding: 20px;
   padding-top: 80px;
-  padding-bottom: 5px;
+  padding-bottom: calc(var(--h) + 5px);
   position: relative;
   top: 0;
   left: 0;
@@ -339,11 +340,16 @@ p.loading::after {
   padding: 10px;
   font-size: 1.5rem;
   width: 12rem;
+  background-color: #555;
+  border: none;
+}
+
+.create-game:hover {
+  background-color: #777
 }
 
 .join {
   font-size: 1.5rem;
-  transition: background 0.1s linear;
   max-width: 80%;
   margin: 5px auto;
   padding: 5px;

@@ -1,6 +1,7 @@
 package werwolf
 
 import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
+import werwolf.screen.ScreenDead
 
 class User {
 
@@ -13,7 +14,11 @@ class User {
         (Role) GrailsHibernateUtil.unwrapIfProxy(getRole())
     }
 
-    static belongsTo = [ game: Game, role: Role, screen: Vote ]
+    Screen unwrapScreen() {
+        (Screen) GrailsHibernateUtil.unwrapIfProxy(getScreen())
+    }
+
+    static belongsTo = [game: Game, role: Role, screen: Screen ]
     static hasMany = [ chats: Chat ]
 
     static constraints = {
@@ -28,22 +33,23 @@ class User {
     }
 
     void kill() {
-        this.setNextAction(Action.get('dead'))
-        Role role = GrailsHibernateUtil.unwrapIfProxy(this.getRole())
+        this.setNextScreen(new ScreenDead())
+        Role role = (Role) GrailsHibernateUtil.unwrapIfProxy(this.getRole())
         this.setDead(!role.onDeath(this))
     }
 
-    void setNextAction(Action next) {
+    void setNextScreen(Screen next) {
         assert next != null
 
         withTransaction({
-            Vote nextScreen = new Vote(action: next.name, game: this.game)
             next.getVoters(this.game.users, this).each({ other ->
-                if (other.screen?.action == next.name)
-                    nextScreen = other.screen
+                if (other.unwrapScreen()?.getKey() == next.getKey())
+                    next = other.unwrapScreen()
             })
+            next.setGame(this.getGame())
+            next.save()
 
-            this.setProperty('screen', nextScreen.save())
+            this.setScreen(next)
             this.save()
         })
     }
