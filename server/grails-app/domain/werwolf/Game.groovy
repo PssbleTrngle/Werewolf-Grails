@@ -1,6 +1,11 @@
 package werwolf
 
 import org.grails.orm.hibernate.cfg.GrailsHibernateUtil
+import werwolf.screen.ScreenDead
+import werwolf.screen.ScreenEnd
+import werwolf.screen.ScreenLynch
+import werwolf.screen.ScreenReady
+import werwolf.screen.ScreenSleep
 
 class Game {
 
@@ -12,9 +17,8 @@ class Game {
 
     /* Game Options */
     boolean revealDead = true
-    boolean anonymousPolls = false
 
-    static hasMany = [ users: User, screens: Vote ]
+    static hasMany = [ users: User, screens: Screen ]
 
     static constraints = {}
 
@@ -29,14 +33,15 @@ class Game {
 
     void checkScreens() {
 
-        getScreens().each({ Vote screen ->
+        getScreens().each({ Screen screen ->
+            screen = (Screen) GrailsHibernateUtil.unwrapIfProxy(screen)
             if(screen.canClose())
                 User.withTransaction({
 
                     screen.getUsers().each({ User voter ->
-                        if (voter.screen == null || voter.screen.id == screen.id) {
-                            Action next = screen.action().nextAction(voter)
-                            if(next) voter.setNextAction(next)
+                        if (voter.unwrapScreen() == null || voter.unwrapScreen().id == screen.id) {
+                            Screen next = screen.nextScreen(voter)
+                            if(next) voter.setNextScreen(next)
                         }
                     })
 
@@ -49,7 +54,7 @@ class Game {
     }
 
     boolean hasOpen() {
-        screens.count({ Vote screen -> screen.isOpen() }) > 0
+        screens.count({ Screen screen -> screen.isOpen() }) > 0
     }
 
     void checkDone() {
@@ -59,12 +64,13 @@ class Game {
         if (!hasOpen()) {
             /* TODO sort votes by priority */
 
-            screens.each({ Vote screen ->
+            screens.each({ Screen screen ->
+                screen = (Screen) GrailsHibernateUtil.unwrapIfProxy(screen)
 
                 def result = screen.calculateResult()
 
-                if (screen.action()) User.withTransaction({
-                    screen.action().run(alive(), result)
+                User.withTransaction({
+                    screen.run(alive(), result)
                 })
 
             })
@@ -72,11 +78,11 @@ class Game {
 
         /* If there have not been created any new screens (ex.: the Hunter on death) */
         if (!hasOpen()) {
-            screens.each({ Vote screen ->
+            screens.each({ Screen screen ->
 
                 User.withTransaction({
                     screen.users.each({User user ->
-                        if(user.screen?.id == screen.id) user.setScreen(null)
+                        if(user.unwrapScreen()?.id == screen.id) user.setScreen(null)
                         user.save()
                     })
                 })
@@ -100,12 +106,17 @@ class Game {
 
             users.each({ User user ->
 
-                Action action = Action.get(isIsNight() ? 'lynch' : (user.role?.nightAction ?: 'sleep'))
-                if(user.isDead()) action = Action.get('dead')
+                Screen next
+                if(won)
+                    next = new ScreenEnd(won: user.getRole().hasWon(this))
+                else if(user.isDead())
+                    next = new ScreenDead()
+                else if (isIsNight())
+                    next = new ScreenLynch()
+                else
+                    next = (user.unwrapRole().nightScreen() ?: new ScreenSleep())
 
-                if(won) action = Action.get(user.getRole().hasWon(this) ? 'won' : 'lost')
-
-                user.setNextAction(action)
+                user.setNextScreen(next)
 
             })
 
@@ -142,9 +153,11 @@ class Game {
             roles.add(villager)
 
         Collections.shuffle(roles)
-        Vote.withTransaction({
+        Screen.withTransaction({
 
-            Vote ready = new Vote(action: 'ready', game: this).save()
+            Screen ready = new ScreenReady()
+            ready.game = this
+            ready.save(failOnError: true)
 
             users.eachWithIndex({user, index ->
                 user.setRole(roles.get(index))

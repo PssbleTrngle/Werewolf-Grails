@@ -19,20 +19,17 @@ json {
 
         night game.isNight
         users tmpl.'/user/known'('user', game.users)
-        if(user.screen) screen {
+        if(user.unwrapScreen()) screen {
 
-            if(user.screen.action()) {
-                action user.screen.action
-                targets g.render(template: '/user/unknown', var: 'user', collection: user.screen.action().getTargets(game.users, user))
-                voters g.render(template: '/user/unknown', var: 'user', collection: user.screen.action().getVoters(game.users, user),
-                            model: [displayAs: (user.isDead() && game.isRevealDead()) ? user.getRole() : user.screen.action().displayAs()])
-            }
+            action user.unwrapScreen().getKey()
+            targets g.render(template: '/user/unknown', var: 'user', collection: user.unwrapScreen().getTargets(game.users, user))
+            voters g.render(template: '/user/unknown', var: 'user', collection: user.unwrapScreen().getVoters(game.users, user),
+                        model: [displayAs: (user.isDead() && game.isRevealDead()) ? user.getRole() : user.unwrapScreen().displayAs()])
 
-            options user.screen.action().options
-            message user.screen.action().message
+            options user.unwrapScreen().options()
+            message user.unwrapScreen().getMessage()
 
-            if(user.screen.result) result user.screen.result
-            decisions g.render(template: 'decision', var: 'decision', collection: user.screen.decisions, model: [anonymous: user.screen.anonymous])
+            decisions g.render(template: 'decision', var: 'decision', collection: user.unwrapScreen().decisions, model: [anonymous: user.unwrapScreen().anonymous])
         }
     } else {
         games g.render(template: 'preview', var: 'game', collection: Game.findAll({ true }))

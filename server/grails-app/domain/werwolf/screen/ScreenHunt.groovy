@@ -2,25 +2,26 @@ package werwolf.screen
 
 import werwolf.User
 
-class ScreenLynch extends ScreenKill {
+class ScreenHunt extends ScreenKill {
 
-    ScreenLynch() {
-        super('Whose head should roll?')
+    @Override
+    String getMessage() {
+        'Who will you take with you?'
     }
 
     @Override
     protected boolean isTarget(User user, User self) {
-        return false
+        return user.id != self.id
     }
 
     @Override
     protected boolean isVoter(User user, User self) {
-        return false
+        return user.id == self.id
     }
 
     @Override
     String getKey() {
-        return 'lynch'
+        return 'hunt'
     }
 
 }

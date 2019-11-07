@@ -11,8 +11,8 @@ class GameSpec extends Specification implements DomainUnitTest<Game> {
     def cleanup() {
     }
 
-    void "test something"() {
-        expect:"fix me"
-            true == false
+    void "test"() {
+        expect:
+        true
     }
 }

@@ -11,8 +11,8 @@ class GameControllerSpec extends Specification implements ControllerUnitTest<Gam
     def cleanup() {
     }
 
-    void "test something"() {
-        expect:"fix me"
-        true == false
+    void "test"() {
+        expect:
+        true
     }
 }

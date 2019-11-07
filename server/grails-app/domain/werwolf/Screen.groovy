@@ -3,39 +3,32 @@ package werwolf
 import werwolf.screen.ScreenDead
 import werwolf.screen.ScreenSleep
 
-abstract class Vote {
+abstract class Screen {
 
     int id
     final boolean anonymous = false
 
-    Vote(String message, String result = null) {
-        this.message = message
-        this.result = result
-    }
-
-    final Vote nextScreen(User user) {
+    final Screen nextScreen(User user) {
         if(user.isDead()) new ScreenDead()
-        Vote next = this.next(user)
+        Screen next = this.next(user)
         next ?: new ScreenSleep()
     }
 
-    final String message
-    final String result
-
     abstract String getKey()
+    abstract String getMessage()
 
     abstract String[] options();
 
-    private Vote next(User user) { null }
+    protected Screen next(User user) { null }
 
-    abstract void run(User user, def selection);
+    abstract void run(Set<User> users, def selection);
 
-    Set<User> getVoters(Set<User> users, User holder) {
-        return users.findAll({ u -> !u.isDead() && this.isVoter(holder, u) })
+    final Set<User> getVoters(Set<User> users, User self) {
+        return users.findAll({ u -> !u.isDead() && this.isVoter(u, self) })
     }
 
-    Set<User> getTargets(Set<User> users, User holder) {
-        return users.findAll({ u -> !u.isDead() && this.isTarget(holder, u) })
+    final Set<User> getTargets(Set<User> users, User self) {
+        return users.findAll({ u -> !u.isDead() && this.isTarget(u, self) })
     }
 
     protected abstract boolean isTarget(User user, User self)
@@ -87,8 +80,6 @@ abstract class Vote {
     static hasMany = [ decisions: Decision, users: User ]
 
     static constraints = {
-        result nullable: true
-        result blank: false
     }
 
     static mapping = {

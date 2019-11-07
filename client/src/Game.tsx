@@ -15,7 +15,6 @@ interface Screen {
 	targets: User[],
 	voters: User[],
 	options: string[],
-	result?: string,
 	decisions?: Decision[],
 }
 
@@ -74,12 +73,11 @@ class People extends Component<{users: User[], size: size, action?: string, app:
 class ScreenComponent extends Component<{screen: Screen, app: GameApp},{}> {
 
 	render() {
-		const {action, options, targets, voters, result, decisions} = this.props.screen;
+		const {action, options, targets, voters, decisions} = this.props.screen;
 		const {app} = this.props;
 
 		return (
 			<div className='screen pt-4'>
-				{result && <h1 className='result'>{result}</h1>}
 				{options.length > 0 &&<div className='row justify-content-center mb-5'>
 					{options.map(option =>	{
 						let click = () => {
@@ -129,15 +127,14 @@ export class Game extends Component<{game: GameState, app: GameApp},{}> {
 		let {screen, users, night} = this.props.game;
 
 		if(!screen) screen = {
-			message: 'Waiting for Players',
+			message: `Waiting for Players ${users.length}/5`,
 			targets: [],
 			voters: users,
 			options: [],
-			result: `${users.length}/5`,
 		}
 
 		return (
-			<div className={'game-container ' + (night ? 'night' : 'day')}>
+			<div className={'game-container'}>
 				<Sky message={screen.message} />
 				<ScreenComponent app={this.props.app} screen={screen} />
 			</div>
@@ -201,9 +198,11 @@ export class NoGame extends Component<{user?: User, app: GameApp, games: GamePre
 			);
 
 		return (
-			<div className='game-container loading night'>
-				<Icon />
-				<p className='loading'>Loading</p>
+			<div className='game-container loading night row'>
+				<div className='col align-self-center'>
+					<Icon />
+					<p className='loading'>Loading</p>
+				</div>
 			</div>
 		);
 

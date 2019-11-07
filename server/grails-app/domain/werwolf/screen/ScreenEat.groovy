@@ -1,26 +1,33 @@
 package werwolf.screen
 
+import werwolf.Role
 import werwolf.User
+import werwolf.role.RoleWerewolf
 
-class ScreenHunt extends ScreenKill {
+class ScreenEat extends ScreenKill {
 
-    ScreenHunt() {
-        super('Who will you take with you?')
+    @Override
+    String getMessage() {
+        'Who will you eat?'
     }
 
     @Override
     protected boolean isTarget(User user, User self) {
-        return user.id != self.id
+        return !user.getRole().instanceOf(RoleWerewolf.class)
     }
 
     @Override
     protected boolean isVoter(User user, User self) {
-        return user.id == self.id
+        return user.getRole().instanceOf(RoleWerewolf.class)
     }
 
     @Override
     String getKey() {
-        return 'hunt'
+        return 'eat'
     }
 
+    @Override
+    Role displayAs() {
+        return Role.findByName('Werewolf')
+    }
 }

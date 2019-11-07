@@ -1,14 +1,15 @@
 package werwolf.screen
 
-class ScreenReady extends ScreenStatic {
+class ScreenSleep extends ScreenStatic {
 
-    ScreenReady() {
-        super('Are you ready?')
+    @Override
+    String getMessage() {
+        'You are sleeping'
     }
 
     @Override
     String getKey() {
-        return 'ready'
+        return 'sleep'
     }
 
 }

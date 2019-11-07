@@ -1,10 +1,9 @@
 package werwolf.screen
 
-class ScreenReady extends ScreenStatic {
+class ScreenDead extends ScreenStatic {
 
-    ScreenReady() {
-        super('Are you ready?')
-    }
+    @Override
+    String getMessage() { 'You are dead'  }
 
     @Override
     String getKey() {

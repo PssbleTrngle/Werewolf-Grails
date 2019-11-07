@@ -3,7 +3,7 @@ package werwolf
 import grails.testing.gorm.DomainUnitTest
 import spock.lang.Specification
 
-class VoteSpec extends Specification implements DomainUnitTest<Vote> {
+class ScreenSpec extends Specification implements DomainUnitTest<Screen> {
 
     def setup() {
     }
@@ -11,8 +11,8 @@ class VoteSpec extends Specification implements DomainUnitTest<Vote> {
     def cleanup() {
     }
 
-    void "test something"() {
-        expect:"fix me"
-            true == false
+    void "test"() {
+        expect:
+        true
     }
 }

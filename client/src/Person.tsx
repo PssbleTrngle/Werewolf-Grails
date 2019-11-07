@@ -64,10 +64,10 @@ class Vote extends Component<{vote: string},{}> {
 
 		if(!isNaN(parseInt(vote))) return null;
 
-		if(vote == 'yes')
+		if(vote.toLowerCase() == 'yes')
 			return (<span className="badge badge-success">Yes</span>);
 
-		if(vote == 'no')
+		if(vote.toLowerCase() == 'no')
 			return (<span className="badge badge-danger">No</span>);
 
 		return (<p>{vote}</p>);

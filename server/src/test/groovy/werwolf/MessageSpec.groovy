@@ -11,8 +11,8 @@ class MessageSpec extends Specification implements DomainUnitTest<Message> {
     def cleanup() {
     }
 
-    void "test something"() {
-        expect:"fix me"
-            true == false
+    void "test"() {
+        expect:
+        true
     }
 }

@@ -1,5 +1,6 @@
 * {
   user-select: none;
+  transition: background 0.1s linear;
 }
 
 #root {
@@ -82,5 +83,15 @@
   margin: 0 auto;
   height: 100%;
   width: 100vw;
-  background-color: #AAA;
+  background-color: #333;
+}
+
+.day .row.tab-content {
+  background-color: #DDD;
+  color: #222;
+}
+
+.night .row.tab-content {
+  background-color: #333;
+  color: #FFF;
 }

@@ -7,7 +7,7 @@ class RoleVillager extends Role {
 
     @Override
     boolean triggerWin(Game game) {
-        game.alive().count({!it.getRole().instanceOf(RoleWerewolf.class)}) == 0
+        game.alive().count({it.unwrapRole().instanceOf(RoleWerewolf.class)}) == 0
     }
 
 }

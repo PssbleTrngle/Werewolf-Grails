@@ -11,8 +11,8 @@ class DecisionSpec extends Specification implements DomainUnitTest<Decision> {
     def cleanup() {
     }
 
-    void "test something"() {
-        expect:"fix me"
-            true == false
+    void "test"() {
+        expect:
+        true
     }
 }

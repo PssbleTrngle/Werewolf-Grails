@@ -122,19 +122,19 @@ class App extends Component<{token?: string},AppState> {
 
         let active = 'game';
         /* TODO This is aweful remove */
-        let size: any = {game: chats.length ? 7 : (game ? 8 : 12), chat: chats.length ? 3 : 2, sidebar: 2};
+        let size: any = {game: chats.length ? 7 : (user ? 8 : 12), chat: chats.length ? 3 : 2, sidebar: 2};
 
         return (
-            <>
-            {game && <Nav tabs={Object.keys(panels)} active={active} />}
-            <div className='row justify-content-center tab-content'>
-                {Object.keys(panels).map(id => 
-                    <div key={id} id={`${id}`} role="tabpanel" className={`tab-pane col-${size[id]} ${id == active ? 'active' : ''}`}>
-                        {panels[id]}
-                    </div>
-                )}
+            <div className={'h-100 ' + ((!game || game.night) ? 'night' : 'day')}>
+                {game && <Nav tabs={Object.keys(panels)} active={active} />}
+                <div className='row justify-content-center tab-content'>
+                    {Object.keys(panels).map(id => 
+                        <div key={id} id={`${id}`} role="tabpanel" className={`tab-pane col-${size[id]} ${id == active ? 'active' : ''}`}>
+                            {panels[id]}
+                        </div>
+                    )}
+                </div>
             </div>
-            </>
         );
     }
 }
