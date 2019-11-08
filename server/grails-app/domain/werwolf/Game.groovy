@@ -9,7 +9,7 @@ import werwolf.screen.ScreenSleep
 
 class Game {
 
-    static final MIN_PLAYERS = 3
+    static final MIN_PLAYERS = 5
 
     boolean started
     int id
