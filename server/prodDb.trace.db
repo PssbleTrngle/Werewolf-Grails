@@ -1,0 +1,4 @@
+2019-11-07 19:01:22 jdbc[7]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "ROLE" nicht gefunden
+Table "ROLE" not found; SQL statement:
+select count(role0_.id) as col_0_0_ from role role0_ limit ? [42102-199]
