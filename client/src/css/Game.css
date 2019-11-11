@@ -27,11 +27,15 @@
 }
 
 .night .game-container {
-  background-color: #0007;
+  background: #121712;
+}
+
+.loading.game-container {
+  background: #222;
 }
 
 .day .game-container {
-  background-color: #515e3c;
+  background: #88B047;
 }
 
 .option {
@@ -158,7 +162,34 @@
   left: 0;
   overflow: hidden;
   width: 100%;
-  clip-path: polygon(100% 0%, 0% 0%, 0 calc(100% - var(--h)), 10% 100%, 28% calc(100% - var(--h)), 40% calc(100% - var(--h)), 51% 100%, 70% 100%, 75% calc(100% - var(--h)), 90% calc(100% - var(--h)), 100% 100%);
+  /* clip-path: polygon(100% 0%, 0% 0%, 0 calc(100% - var(--h)), 10% 100%, 28% calc(100% - var(--h)), 40% calc(100% - var(--h)), 51% 100%, 70% 100%, 75% calc(100% - var(--h)), 90% calc(100% - var(--h)), 100% 100%); */
+}
+
+.scenery {
+  --h: 300px;
+  width: 100%;
+  height: var(--h);
+
+  background-image: url('../images/scenery.svg');
+  background-size: contain;
+  background-position: center;
+  background-repeat: repeat-x;
+
+  margin-top: calc(var(--h) / -2);
+  transform: translate(0, calc(var(--h) / 4));
+}
+
+.night .scenery {
+  filter: brightness(0.25) saturate(0.75);
+}
+
+@keyframes scenery {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
 }
 
 .game-container::after {
@@ -174,16 +205,14 @@
 }
 
 .sky {
-  padding: 20px;
+  padding: 0;
   padding-top: 80px;
-  padding-bottom: calc(var(--h) + 5px);
   position: relative;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   transition: background 0.5s linear;
-  background-image: linear-gradient(transparent calc(100% - 20px), #0003);
 }
 
 .clouds {
@@ -193,14 +222,15 @@
   position: absolute;
   top: 0;
   left: 0;
+  mix-blend-mode: ;
 }
 
 .night .sky {
-  background-color: #111;
+  background: linear-gradient(to top, #121217, #000);
 }
 
 .day .sky {
-  background-color: #73c2f5;
+  background: linear-gradient(to top, #73c2f5, #517ee8);
 }
 
 .cloud {
@@ -336,7 +366,7 @@ p.loading::after {
 }
 
 .create-game {
-  margin: 0 5px;
+  margin: 5px 10px;
   padding: 10px;
   font-size: 1.5rem;
   width: 12rem;

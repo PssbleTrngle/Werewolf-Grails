@@ -114,23 +114,32 @@ class App extends Component<{token?: string},AppState> {
 
         if(user) document.title = `Werewolf - ${user.name}`;
 
-        const panels: any = {};
+        const panels: {key?: string, element: JSX.Element, size?: number}[] = [];
 
-        if(user) panels.sidebar = <Sidebar app={this} game={game} user={user} />
-        panels.game = (game ? <Game app={this} game={game} /> : <NoGame games={games || []} user={user} app={this} />)
-        if(chats.length > 0) panels.chat = (<ChatPanel token={this.token()} app={this} chats={chats || []}/>)
+        if(user) panels.push({key: 'sidebar', size: 2, element: <Sidebar app={this} game={game} user={user} />});
+        
+        if(game) panels.push({key: 'game', element: <Game app={this} game={game} />});
+        else panels.push({key: 'game', element: <NoGame games={games || []} user={user} app={this} />});
+        
+        if(chats.length > 0) panels.push({key: 'chat', size: 3, element: <ChatPanel token={this.token()} app={this} chats={chats || []}/>});
+        else panels.push({size: 2, element: <div />});
+
+        const sizes: any[] = panels.map(p => p.size).filter(s => s);
+        const total = sizes.reduce((a, b) => a + b);
+        const autos = panels.filter(p => !p.size);
+        const size = Math.floor((12 - total) / autos.length);
+        autos.forEach((p, i) => autos[i].size = size);
 
         let active = 'game';
-        /* TODO This is aweful remove */
-        let size: any = {game: chats.length ? 7 : (user ? 8 : 12), chat: chats.length ? 3 : 2, sidebar: 2};
+        const tabs: any[] = panels.filter(p => p.key !== undefined).map(p => p.key);
 
         return (
             <div className={'h-100 ' + ((!game || game.night) ? 'night' : 'day')}>
-                {game && <Nav tabs={Object.keys(panels)} active={active} />}
+                {game && <Nav tabs={tabs} active={active} />}
                 <div className='row justify-content-center tab-content'>
-                    {Object.keys(panels).map(id => 
-                        <div key={id} id={`${id}`} role="tabpanel" className={`tab-pane col-${size[id]} ${id == active ? 'active' : ''}`}>
-                            {panels[id]}
+                    {panels.map(panel => 
+                        <div key={panel.key} id={panel.key} role="tabpanel" className={`tab-pane col-${panel.size} ${panel.key == active ? 'active' : ''}`}>
+                            {panel.element}
                         </div>
                     )}
                 </div>

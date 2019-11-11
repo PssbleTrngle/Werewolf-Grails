@@ -24,9 +24,9 @@ export class Person extends Component<PersonProps,{}> {
 		const {user, click, showRole, vote, votes} = this.props;
 		if(!user) return null;
 
-		let icon = require(`./images/villager.svg`)
+		let icon = require(`./images/roles/villager.svg`)
 		if(user.role) try {
-			icon = require(`./images/${user.role.name.toLowerCase()}.svg`);
+			icon = require(`./images/roles/${user.role.name.toLowerCase()}.svg`);
 		} catch {};
 
 		return (

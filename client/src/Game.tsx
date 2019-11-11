@@ -102,9 +102,10 @@ class Sky extends Component<{message: string},{}> {
 		let delay = 0;
 
 		return (
-			<div className='sky-container'>
+			<div>
 				<div className='sky'>
 					<h1 className='text-center screen-message'>{message}</h1>
+					<div className='scenery'></div>
 				</div>
 				<div className='orbits'></div>
 				<div className='clouds'>
@@ -124,7 +125,7 @@ class Sky extends Component<{message: string},{}> {
 export class Game extends Component<{game: GameState, app: GameApp},{}> {
 
 	render() {
-		let {screen, users, night} = this.props.game;
+		let {screen, users} = this.props.game;
 
 		if(!screen) screen = {
 			message: `Waiting for Players ${users.length}/5`,

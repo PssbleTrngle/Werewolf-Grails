@@ -75,8 +75,18 @@
   border-radius: 0 !important;
 }
 
-.tab-pane {
+.tab-pane:not(#game) {
+  border-right: 2px solid;
+  border-left: 2px solid;
 	transition: width 1s linear;
+}
+
+.night .tab-pane:not(#game) {
+  border-color: #444;
+}
+
+.day .tab-pane:not(#game) {
+  border-color: #999;
 }
 
 .row.tab-content {
