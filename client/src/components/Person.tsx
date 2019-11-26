@@ -18,6 +18,52 @@ type PersonProps = {
 	votes?: string[],
 }
 
+type size = 'big' | 'small' | 'tiny';
+export class People extends Component<{users: User[], size: size, action?: string, app: GameApp, decisions?: Decision[], voters?: boolean},{}> {
+
+	render() {
+		const {users, size, action, app, decisions, voters} = this.props;
+
+		let people = users.map(user => {
+
+			let click = !action ? undefined : () => {
+				let target = user.id;
+				app.send('action', { action, target, })
+			};
+
+			let out = [ <Person key={user.id} click={click} user={user} /> ];
+
+			let vote = undefined;
+			let votes: string[] = [];
+
+			if(decisions) {
+
+				if(voters) {
+					let decision = decisions.find(d => {
+						return d.user && d.user.id == user.id;
+					});
+					vote = decision ? decision.selection : undefined;
+				} else {
+					votes = decisions.filter(d => {
+						let selection = parseInt(d.selection)
+						return !isNaN(selection) && selection == user.id;
+					}).map(d => d.user ? d.user.name : '???')
+				}
+
+			}
+
+			return (<Person key={user.id} click={click} user={user} vote={vote} votes={votes} />);
+		})
+
+		return (
+			<div className={'row justify-content-center ' + (size ? size : '')}>
+				{people}
+			</div>
+		)
+	}
+
+}
+
 export class Person extends Component<PersonProps,{}> {
 
 	render() {

@@ -1,98 +1,13 @@
 import React, { Component } from 'react';
-import {CLIENT_VERSION, REACT_VERSION, SERVER_URL} from './config'
 
-import { Person, User } from './Person'
-import { GameApp } from './App'
-
-interface Decision {
-	selection: any,
-	user?: User,
-}
-
-interface Screen {
-	message: string,
-	action?: string,
-	targets: User[],
-	voters: User[],
-	options: string[],
-	decisions?: Decision[],
-}
+import { User } from './Person'
+import { GameApp } from '../App'
+import { Screen, IScreen } from './Screen'
 
 export interface GameState {
 	users: User[];
-	screen?: Screen;
+	screen?: IScreen;
 	night: boolean;
-}
-
-type size = 'big' | 'small' | 'tiny';
-class People extends Component<{users: User[], size: size, action?: string, app: GameApp, decisions?: Decision[], voters?: boolean},{}> {
-
-	render() {
-		const {users, size, action, app, decisions, voters} = this.props;
-
-		let people = users.map(user => {
-
-			let click = !action ? undefined : () => {
-				let target = user.id;
-				app.send('action', { action, target, })
-			};
-
-			let out = [ <Person key={user.id} click={click} user={user} /> ];
-
-			let vote = undefined;
-			let votes: string[] = [];
-
-			if(decisions) {
-
-				if(voters) {
-					let decision = decisions.find(d => {
-						return d.user && d.user.id == user.id;
-					});
-					vote = decision ? decision.selection : undefined;
-				} else {
-					votes = decisions.filter(d => {
-						let selection = parseInt(d.selection)
-						return !isNaN(selection) && selection == user.id;
-					}).map(d => d.user ? d.user.name : '???')
-				}
-
-			}
-
-			return (<Person key={user.id} click={click} user={user} vote={vote} votes={votes} />);
-		})
-
-		return (
-			<div className={'row justify-content-center ' + (size ? size : '')}>
-				{people}
-			</div>
-		)
-	}
-
-}
-
-class ScreenComponent extends Component<{screen: Screen, app: GameApp},{}> {
-
-	render() {
-		const {action, options, targets, voters, decisions} = this.props.screen;
-		const {app} = this.props;
-
-		return (
-			<div className='screen pt-4'>
-				{options.length > 0 &&<div className='row justify-content-center mb-5'>
-					{options.map(option =>	{
-						let click = () => {
-							app.send('action', { action, option })
-						};
-						return <button onClick={click} key={option} className='option'>{option}</button>
-					})}
-				</div>}
-			<People app={this.props.app} size={'small'} users={targets} action={action} decisions={decisions} />
-			{ voters.length > 1 && <People app={this.props.app} size={'tiny'} users={voters} decisions={decisions} voters={true} /> }
-			
-			</div>
-		);
-	}
-
 }
 
 class Sky extends Component<{message: string},{}> {
@@ -137,7 +52,7 @@ export class Game extends Component<{game: GameState, app: GameApp},{}> {
 		return (
 			<div className={'game-container'}>
 				<Sky message={screen.message} />
-				<ScreenComponent app={this.props.app} screen={screen} />
+				<Screen app={this.props.app} screen={screen} />
 			</div>
 		)
 

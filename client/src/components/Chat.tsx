@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import {GameApp} from './App'
+import {GameApp} from '../App'
 import {User} from './Person'
-import {SERVER_URL} from './config'
 
 interface Message {
     text: string;
@@ -22,6 +21,9 @@ class ChatInput extends Component<{app: GameApp, chat: number},{text?: string}> 
         this.state = {}
     }
 
+    /**
+     * Send the entered message
+     */
     send() {
         let {app, chat} = this.props;
         const {text} = this.state;
@@ -32,8 +34,12 @@ class ChatInput extends Component<{app: GameApp, chat: number},{text?: string}> 
         }
     }
 
-    change(target: HTMLInputElement) {
-        const text = target.value;
+    /**
+     * Called every time the input value is changed
+     * Can also be used to set the input to a specific value
+     * @param text the new text 
+     */
+    change(text: any) {
         this.setState({text});
     }
 
@@ -42,7 +48,7 @@ class ChatInput extends Component<{app: GameApp, chat: number},{text?: string}> 
 
         return (
             <form onSubmit={(e) => {this.send(); e.preventDefault(); }}>
-                <input onChange={(e) => this.change(e.target)} placeholder='Message' type='text' value={text}></input>
+                <input onChange={(e) => this.change(e.target.value)} placeholder='Message' type='text' value={text}></input>
             </form>
         );
     }
