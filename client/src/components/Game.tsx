@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import { User } from './Person'
 import { Screen, IScreen } from './Screen'
+import { GameApp } from '../App'
 
 export interface GameState {
 	users: User[];

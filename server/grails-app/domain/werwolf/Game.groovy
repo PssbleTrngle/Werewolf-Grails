@@ -238,7 +238,7 @@ class Game {
     }
 
     /**
-        @returns if the game is able to start
+    *    @returns if the game is able to start
     */
     boolean isReady() {
         return this.getUsers().size() >= MIN_PLAYERS
@@ -246,7 +246,7 @@ class Game {
 
 
     /**
-        Starts the game
+    *  Starts the game
     */
     Game start() {
         assert !isStarted()

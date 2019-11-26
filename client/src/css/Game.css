@@ -166,17 +166,23 @@
 }
 
 .scenery {
-  --h: 300px;
+  --h: 50vw;
   width: 100%;
   height: var(--h);
 
   background-image: url('../images/scenery.svg');
-  background-size: contain;
+  background-size: cover;
   background-position: center;
   background-repeat: repeat-x;
 
-  margin-top: calc(var(--h) / -2);
+  margin-top: calc(var(--h) / -1.5);
   transform: translate(0, calc(var(--h) / 4));
+}
+
+@media only screen and (min-width: 600px) {
+  .scenery {
+    --h: 400px;
+  }
 }
 
 .night .scenery {
@@ -210,8 +216,6 @@
   position: relative;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
   transition: background 0.5s linear;
 }
 

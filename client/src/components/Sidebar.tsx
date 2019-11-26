@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Person, User } from './Person';
 import { DEV } from '../config';
+import { GameState } from './Game'
 
 /**
  * The sidebar, currently only used to display the user related info

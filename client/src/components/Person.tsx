@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Decision } from './Screen'
+import { GameApp } from '../App'
 
 export interface User {
 	name: string;
@@ -76,9 +77,9 @@ export class Person extends Component<PersonProps,{}> {
 		if(!user) return null;
 
 		/* Try to find an svg file for the role, else fall back to the villager.svg */
-		let icon = require(`./images/roles/villager.svg`)
+		let icon = require(`../images/roles/villager.svg`)
 		if(user.role) try {
-			icon = require(`./images/roles/${user.role.name.toLowerCase()}.svg`);
+			icon = require(`../images/roles/${user.role.name.toLowerCase()}.svg`);
 		} catch {};
 
 		return (
