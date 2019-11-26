@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Decision } from './Screen'
 
 export interface User {
 	name: string;
@@ -24,14 +25,16 @@ export class People extends Component<{users: User[], size: size, action?: strin
 	render() {
 		const {users, size, action, app, decisions, voters} = this.props;
 
-		let people = users.map(user => {
+		let people = users.map((user: User) => {
 
-			let click = !action ? undefined : () => {
+			/**
+			 * If the person should has a screen action bound to it
+			 * ex.: Voting for someone on the lynch screen
+			 */
+			let click = action ? () => {
 				let target = user.id;
 				app.send('action', { action, target, })
-			};
-
-			let out = [ <Person key={user.id} click={click} user={user} /> ];
+			} : undefined;
 
 			let vote = undefined;
 			let votes: string[] = [];
@@ -39,11 +42,13 @@ export class People extends Component<{users: User[], size: size, action?: strin
 			if(decisions) {
 
 				if(voters) {
-					let decision = decisions.find(d => {
+					/* If the displayed people are the voters, show who this person voted for */
+					let decision = decisions.find((d: Decision) => {
 						return d.user && d.user.id == user.id;
 					});
 					vote = decision ? decision.selection : undefined;
 				} else {
+					/* Else, show who voted for this person */
 					votes = decisions.filter(d => {
 						let selection = parseInt(d.selection)
 						return !isNaN(selection) && selection == user.id;
@@ -70,6 +75,7 @@ export class Person extends Component<PersonProps,{}> {
 		const {user, click, showRole, vote, votes} = this.props;
 		if(!user) return null;
 
+		/* Try to find an svg file for the role, else fall back to the villager.svg */
 		let icon = require(`./images/roles/villager.svg`)
 		if(user.role) try {
 			icon = require(`./images/roles/${user.role.name.toLowerCase()}.svg`);

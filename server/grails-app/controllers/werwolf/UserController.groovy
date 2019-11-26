@@ -4,11 +4,9 @@ class UserController {
 	static responseFormats = ['json', 'xml']
     static allowedMethods = [index: 'GET', save: 'POST']
 
-    static void setUser(User user) {
-        assert user != null
-        println "Set user id to $user.id"
-    }
-
+    /**
+    *   Creates a game with 4 dummy accounts for debug purposes
+    */
     static createDevGame(User user) {
         User.withTransaction({
 
@@ -25,6 +23,11 @@ class UserController {
         })
     }
 
+    /**
+    *   Returns the user or creates a new one
+    *   @param token the generated token
+    *   @returns If found, the user model
+    */
     static User getUser(String token) {
 
         User existing = User.findByToken(token)
@@ -37,12 +40,9 @@ class UserController {
         null
     }
 
-    def save() {
-        def json = request.getJSON()
-        User user = User.findByName(json['user'])
-        [user: user]
-    }
-
+    /**
+    *   Returns the user as a JSON response
+    */
     def index() {
         String token = params['token']
         assert token != null

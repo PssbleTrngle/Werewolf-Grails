@@ -4,6 +4,9 @@ class GameController {
 	static responseFormats = ['json', 'xml']
     static allowedMethods = [index: 'GET', save: 'POST']
 	
+    /**
+    *    Serves the JSON data fetches by the react client
+    */
     def index() {
         String token = params['token']
         assert token != null
@@ -12,6 +15,9 @@ class GameController {
         [user: user, game: user?.getGame()]
     }
 
+    /** 
+    *    Create a game for a user
+    */
     void createGame(User user) {
         Game.withTransaction({
 
@@ -22,6 +28,10 @@ class GameController {
         })
     }
 
+
+    /** 
+    *    Join a game as a user
+    */
     void joinGame(User user, int gameID) {
         Game game = Game.get(gameID)
         assert game != null
@@ -31,13 +41,17 @@ class GameController {
         })
     }
 
+    /**
+    *    Handles POST request to /game
+    *    used for Game creation & joining
+    */
     def save() {
         def json = request.getJSON()
         String action = json['action']
         String token = json['token']
         User user = UserController.getUser(token)
 
-        assert action != null
+        assert action != null : 'No action choosen'
         assert user != null : 'Not logged in'
 
         switch(action) {

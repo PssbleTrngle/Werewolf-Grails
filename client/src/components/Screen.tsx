@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { GameApp } from '../App';
 import { User, People } from './Person'
 
-interface Decision {
+export interface Decision {
 	selection: any,
 	user?: User,
 }

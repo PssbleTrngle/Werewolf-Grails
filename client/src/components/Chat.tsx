@@ -71,16 +71,19 @@ class MessageBubble extends Component<{message: Message, isSender: boolean},{}> 
 
 }
 
-export class ChatComponent extends Component<{chat: Chat, visible: boolean, app: GameApp, panel: {back: () => void}},{}> {
+/**
+ * A single chat view, showing messages of a specific chat
+ */
+export class ChatComponent extends Component<{chat: Chat, visible: boolean, app: GameApp, back:() => void},{}> {
 
     render() {
-        const {chat, visible, panel, app} = this.props;
+        const {chat, visible, back, app} = this.props;
         const {name, messages, users} = chat;
         const token = app.token();
 
         return (
             <div className={`chat-panel ${visible ? 'visible' : ''}`}>
-                <p className='chat-back' onClick={() => panel.back()}>Back</p>
+                <p className='chat-back' onClick={back}>Back</p>
                 <p className='chat-users'>{users.map((u, i) => 
                     <span key={i} className='chat-user'>{u.name}</span>
                 )}</p>
@@ -102,14 +105,17 @@ export class ChatPanel extends Component<PanelProps,{selected?: number}> {
         this.state = {};
     }
 
+    /**
+     * @param selected the index of the selected chat. if undefined, the chat menu will be selected
+     */
     select(selected?: number) {
         this.setState({ selected })
     }
 
-    back() {
-        this.select();
-    }
-
+    /**
+     * Neccessary because the chat would not reload if the token is changed (Switching users should only happen in Dev mode)
+     * @param next the next props
+     */
     shouldComponentUpdate(next: PanelProps): boolean {
         if(next.token != this.props.token) this.select();
         return true;
@@ -126,7 +132,7 @@ export class ChatPanel extends Component<PanelProps,{selected?: number}> {
                     <p key={chat.id} className='chat-name' onClick={() => this.select(chat.id)}>{chat.name}</p>
                 )}
             </div>
-            {chats.map((chat) => <ChatComponent app={app} visible={selected == chat.id} key={chat.id} chat={chat} panel={this} />)}
+            {chats.map((chat) => <ChatComponent app={app} visible={selected == chat.id} key={chat.id} chat={chat} back={() => this.select()} />)}
             </>
         );
     }

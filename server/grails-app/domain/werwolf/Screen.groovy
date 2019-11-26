@@ -8,6 +8,9 @@ abstract class Screen {
     int id
     final boolean anonymous = false
 
+    /**
+    *   Gets the next screen for a specific user   
+    */
     final Screen nextScreen(User user) {
         if(user.isDead()) new ScreenDead()
         Screen next = this.next(user)
@@ -19,8 +22,15 @@ abstract class Screen {
 
     abstract String[] options();
 
+    /**
+    *   A screen always following the current
+    *   ex.:    Witch healing --> Witch poisoning
+    */
     protected Screen next(User user) { null }
 
+    /**
+    *   Executes the screen with a selection
+    */
     abstract void run(Set<User> users, def selection);
 
     final Set<User> getVoters(Set<User> users, User self) {
@@ -37,6 +47,11 @@ abstract class Screen {
 
     Role displayAs() { Role.findByName('Villager') }
 
+    /**
+    *   A static screen is one that does not allow any user interaction
+    *   They will not require any decisions in order to be closed at the next cycle
+    *   ex.:    ScreenSleep
+    */
     boolean isStatic() {
         boolean noTargets = true
 
@@ -47,6 +62,9 @@ abstract class Screen {
         options().length == 0 && noTargets
     }
 
+    /**
+    *   Calculates the most voted for option/target
+    */
     def calculateResult() {
 
         Map<User, Integer> targets = [:]
@@ -63,10 +81,18 @@ abstract class Screen {
         return target?.value > option?.value ? target?.key : option?.key
     }
 
+    /**
+    *   @returns if there is still any user input neccessary before the screen can be closed
+    */
     boolean isOpen() {
         return !isStatic() && decisions?.size() < users?.size()
     }
 
+
+    /**
+    *   @returns if the screen can be closed
+    *   returns false for static screens, as they will only be closed when the next cycle starts
+    */
     boolean canClose() {
         return !this.isOpen() && !isStatic()
     }

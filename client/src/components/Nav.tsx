@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 
+/**
+ * A navigation bar shown on mobile devices
+ */
 export class Nav extends Component<{tabs: string[], active: string},{}> {
 
     render() {

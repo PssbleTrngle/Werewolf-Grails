@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { Person, User } from './Person';
-import { GameState } from './Game';
+import { DEV } from '../config';
 
+/**
+ * The sidebar, currently only used to display the user related info
+ */
 export class Sidebar extends Component<{game?: GameState, user?: User, app: {login(user: string): void} & Component},{}> {
 
     render() {
@@ -10,7 +13,7 @@ export class Sidebar extends Component<{game?: GameState, user?: User, app: {log
         return (
             <>
             { user && <Person showRole={true} user={user} /> }
-            { user && game && user.token == 'banana' && 
+            { user && game && DEV && 
                 <select defaultValue={user.name} onChange={(e) => app.login(e.target.value)}>
                     {game.users.map(user => {
                         return <option key={user.id}>{user.name}</option>

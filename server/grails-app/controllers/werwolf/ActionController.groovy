@@ -6,10 +6,15 @@ class ActionController {
 	static responseFormats = ['json', 'xml']
     static allowedMethods = [save: 'POST']
 
+    /**
+    *    Handles POST request to /action
+    *    These are decisions the user selects on his current screen,
+    *    like voting for someone or pressing 'ready'
+    */
     def save() {
+        def json = request.getJSON()
 
         try {
-            def json = request.getJSON()
             String token = json['token']
             User target = User.get(json['target'])
             String option = json['option']
@@ -35,6 +40,7 @@ class ActionController {
             })
             assert !existing: 'User has already voted'
 
+            /* Save the logged in decision */
             Decision.withTransaction({
 
                 new Decision(selection: option, user: user, target: target, screen: screen).save()
@@ -46,8 +52,12 @@ class ActionController {
             })
 
             return [ success: true ]
+
         } catch (AssertionError e) {
+
+            /* An assertion has failed, the message is send back for debug purposes */
             return [ success: false, message: e.getMessage() ]
+
         }
     }
 

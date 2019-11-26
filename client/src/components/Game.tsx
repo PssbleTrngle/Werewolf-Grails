@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 import { User } from './Person'
-import { GameApp } from '../App'
 import { Screen, IScreen } from './Screen'
 
 export interface GameState {
@@ -24,7 +23,7 @@ class Sky extends Component<{message: string},{}> {
 				</div>
 				<div className='orbits'></div>
 				<div className='clouds'>
-				{[0,1,2,3,4].map(i => 
+				{new Array(5).fill(0).map((_, i) => 
 					<div className='cloud' key={i} style={{ 
 						animationDelay: ((delay += (i % 3) + (i % 4 == 0 ? 2 : 0))) * -1 + 's',
 						top: (i * 17) % 10 * 5 + 13
@@ -83,10 +82,18 @@ export interface GamePreview {
 
 export class NoGame extends Component<{user?: User, app: GameApp, games: GamePreview[]},{}> {
 
+	/**
+	 * Ask the server to create a new game
+	 * @param dev Create a dev game (Currently ignored on server)
+	 */
 	createGame(dev: boolean = false) {
 		this.props.app.send('game', { action: 'create', dev });
 	}
 
+	/**
+	 * Ask the server to join a specific game
+	 * @param game the game id
+	 */
 	joinGame(game: number) {
 		this.props.app.send('game', { action: 'join', game });
 	}
